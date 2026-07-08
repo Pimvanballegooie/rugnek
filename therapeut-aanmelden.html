@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aanmelden als therapeut – Rug Nek Netwerk</title>
+  <meta name="description" content="Meld u aan als therapeut bij het Rug Nek Netwerk. Gespecialiseerd in nek & hoofd, borstwervelkolom & ribben, of lage rug & SI-gewricht." />
+  <style>
+    @font-face { font-family: 'Inter'; src: url('fonts/inter-v20-latin-300.woff2') format('woff2'); font-weight: 300; font-display: swap; }
+    @font-face { font-family: 'Inter'; src: url('fonts/inter-v20-latin-regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'Inter'; src: url('fonts/inter-v20-latin-500.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+    @font-face { font-family: 'Inter'; src: url('fonts/inter-v20-latin-600.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+    @font-face { font-family: 'Inter'; src: url('fonts/inter-v20-latin-700.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal: #1BA098; --teal-light: #E6F5F4; --teal-dark: #14807A;
+      --groen: #6ABF4B; --groen-light: #F0F9EB;
+      --blauw: #2E7DD1; --blauw-light: #EAF2FB;
+      --navy: #22384A; --navy-dark: #16242F;
+      --grey-bg: #F8F9FA; --grey-border: #E8ECF0;
+      --text: #22384A; --text-muted: #75828E; --white: #FFFFFF;
+      --geel: #F39C12; --geel-light: #FEF9E7;
+      --rood: #E74C3C;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; font-size: 16px; color: var(--text); background: var(--white); line-height: 1.6; }
+
+    header { background: var(--white); border-bottom: 1px solid var(--grey-border); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 clamp(1rem,4vw,2rem); display: flex; align-items: center; justify-content: space-between; height: 72px; gap: 16px; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; flex-shrink: 0; }
+    .logo img { height: 48px; width: 48px; object-fit: contain; }
+    .logo-text { font-weight: 700; font-size: 1rem; color: var(--navy); line-height: 1.2; }
+    .logo-text span { color: var(--teal); }
+    nav { display: flex; gap: 4px; align-items: center; }
+    nav a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; font-weight: 500; padding: 7px 12px; border-radius: 8px; transition: all 0.2s; white-space: nowrap; }
+    nav a:hover { background: var(--grey-bg); color: var(--navy); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; z-index: 1001; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--navy); border-radius: 2px; transition: transform 0.25s, opacity 0.2s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    @media (max-width: 700px) {
+      .hamburger { display: flex; }
+      nav { display: none; position: absolute; top: 72px; left: 0; right: 0; background: var(--white); flex-direction: column; align-items: stretch; padding: 12px 16px 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); border-top: 1px solid var(--grey-border); }
+      nav.open { display: flex; }
+      nav a { padding: 12px 14px; }
+    }
+
+    .hero { background: linear-gradient(160deg, #1BA098 0%, #6ABF4B 45%, #2E7DD1 100%); color: var(--white); padding: 56px 24px 48px; text-align: center; position: relative; }
+    .hero::before { content:''; position:absolute; inset:0; background:rgba(0,0,0,0.32); }
+    .hero-content { position: relative; z-index: 1; }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); color: rgba(255,255,255,0.95); font-size: 0.75rem; font-weight: 700; padding: 4px 16px; border-radius: 999px; margin-bottom: 18px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .hero h1 { font-size: clamp(1.7rem,4vw,2.4rem); font-weight: 700; margin-bottom: 12px; letter-spacing: -0.02em; text-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    .hero p { opacity: 0.92; max-width: 540px; margin: 0 auto; font-size: 0.98rem; line-height: 1.7; }
+
+    .pagina-inner { max-width: 760px; margin: 0 auto; padding: 40px clamp(1rem,4vw,2rem) 64px; }
+
+    .stappen-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 40px; }
+    .stap { background: var(--grey-bg); border: 1px solid var(--grey-border); border-radius: 12px; padding: 18px 16px; text-align: center; }
+    .stap .nr { width: 34px; height: 34px; border-radius: 50%; background: var(--navy); color: var(--white); font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
+    .stap h3 { font-size: 0.82rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .stap p { font-size: 0.75rem; color: var(--text-muted); line-height: 1.45; }
+
+    .form-sectie { background: var(--grey-bg); border: 1px solid var(--grey-border); border-radius: 16px; padding: 26px; margin-bottom: 20px; }
+    .form-sectie-titel { font-size: 0.98rem; font-weight: 700; color: var(--navy); margin-bottom: 18px; padding-bottom: 10px; border-bottom: 1px solid var(--grey-border); display: flex; align-items: center; gap: 8px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+    .form-group { margin-bottom: 16px; }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+    .form-group label .req { color: var(--teal); }
+    .form-group input, .form-group textarea { width: 100%; padding: 11px 14px; border: 1.5px solid var(--grey-border); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--text); background: var(--white); outline: none; transition: border-color 0.2s; }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(27,160,152,0.12); }
+    .form-group textarea { resize: vertical; min-height: 90px; }
+    .form-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 5px; }
+
+    /* PRAKTIJKCODE */
+    .code-rij { display: flex; gap: 10px; align-items: flex-start; }
+    .code-input { flex: 1; }
+    .code-input input { font-family: monospace; font-size: 1.15rem; letter-spacing: 0.2em; text-transform: uppercase; text-align: center; }
+    .code-check-btn { padding: 12px 20px; background: var(--navy); color: var(--white); border: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; white-space: nowrap; transition: background 0.2s; }
+    .code-check-btn:hover { background: var(--navy-dark); }
+    .code-status { margin-top: 10px; padding: 12px 16px; border-radius: 10px; font-size: 0.85rem; display: none; }
+    .code-status.ok { display: block; background: var(--groen-light); border: 1px solid var(--groen); color: #2e7d32; }
+    .code-status.fout { display: block; background: #FDEDEC; border: 1px solid var(--rood); color: #922B21; }
+    .geen-code-blok { background: var(--geel-light); border: 1px solid rgba(243,156,18,0.35); border-radius: 10px; padding: 14px 16px; font-size: 0.82rem; color: #7d5a00; margin-top: 14px; line-height: 1.6; }
+    .geen-code-blok a { color: var(--teal); font-weight: 600; }
+
+    /* DISCIPLINES */
+    .keuze-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+    .keuze-optie { display: flex; align-items: flex-start; gap: 10px; padding: 13px 15px; border: 1.5px solid var(--grey-border); border-radius: 10px; background: var(--white); cursor: pointer; transition: all 0.15s; }
+    .keuze-optie:hover { border-color: var(--teal); }
+    .keuze-optie.gekozen { border-color: var(--teal); background: var(--teal-light); }
+    .keuze-optie input { width: 17px; height: 17px; accent-color: var(--teal); flex-shrink: 0; margin-top: 2px; }
+    .keuze-optie .naam { font-size: 0.85rem; font-weight: 600; color: var(--navy); line-height: 1.35; }
+    .keuze-optie .sub { font-size: 0.73rem; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+
+    /* SPECIALISATIES per domein */
+    .domein-blok { border: 1.5px solid var(--grey-border); border-radius: 14px; margin-bottom: 16px; overflow: hidden; background: var(--white); }
+    .domein-blok:last-child { margin-bottom: 0; }
+    .domein-kop { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--grey-border); background: var(--dbl); }
+    .domein-kop .icoon { font-size: 1.3rem; }
+    .domein-kop .titel { font-size: 0.9rem; font-weight: 700; color: var(--navy); }
+    .domein-kop .anatomie { font-size: 0.72rem; font-weight: 600; color: var(--db); margin-left: auto; white-space: nowrap; }
+    .domein-opties { padding: 12px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+    .spec-optie { display: flex; align-items: flex-start; gap: 10px; padding: 11px 13px; border: 1.5px solid var(--grey-border); border-radius: 10px; background: var(--white); cursor: pointer; transition: all 0.15s; }
+    .spec-optie:hover { border-color: var(--db); }
+    .spec-optie.gekozen { border-color: var(--db); background: var(--dbl); }
+    .spec-optie input { width: 17px; height: 17px; accent-color: var(--db); flex-shrink: 0; margin-top: 2px; }
+    .spec-optie .naam { font-size: 0.83rem; font-weight: 600; color: var(--navy); line-height: 1.35; }
+    .spec-optie .sub { font-size: 0.71rem; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+
+    /* LAGE RUGNETWERK BLOK */
+    .lrn-blok { display: none; background: var(--blauw-light); border: 1.5px solid var(--blauw); border-radius: 12px; padding: 16px 18px; margin: 12px; }
+    .lrn-blok.zichtbaar { display: block; }
+    .lrn-blok .lrn-titel { font-size: 0.85rem; font-weight: 700; color: #1a4a80; margin-bottom: 8px; }
+    .lrn-blok p { font-size: 0.8rem; color: #1a4a80; line-height: 1.6; margin-bottom: 10px; }
+    .lrn-blok .checkbox-wrap { margin-bottom: 0; }
+    .lrn-blok .checkbox-wrap label { color: #1a4a80; font-weight: 600; }
+
+    .checkbox-wrap { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 14px; }
+    .checkbox-wrap input { width: 18px; height: 18px; accent-color: var(--teal); flex-shrink: 0; margin-top: 2px; }
+    .checkbox-wrap label { font-size: 0.84rem; color: var(--text-muted); line-height: 1.55; }
+    .checkbox-wrap a { color: var(--teal); }
+
+    .btn-submit { width: 100%; padding: 14px; background: var(--teal); color: var(--white); border: none; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+    .btn-submit:hover { background: var(--teal-dark); }
+    .btn-submit:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .succes-blok { display: none; text-align: center; padding: 48px 24px; background: var(--white); border: 1px solid var(--grey-border); border-radius: 16px; }
+    .succes-blok .icon { font-size: 3rem; margin-bottom: 14px; }
+    .succes-blok h2 { font-size: 1.25rem; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+    .succes-blok p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; max-width: 460px; margin: 0 auto; }
+
+    footer { background: var(--navy-dark); color: rgba(255,255,255,0.5); text-align: center; padding: 28px 24px; font-size: 0.82rem; margin-top: 48px; }
+    footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <img src="rugnek_logo.png" alt="Rug Nek Netwerk" />
+      <div class="logo-text"><span>Rug Nek</span> Netwerk</div>
+    </a>
+    <div class="hamburger" onclick="this.classList.toggle('open'); document.getElementById('main-nav').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+    <nav id="main-nav">
+      <a href="index.html">← Terug naar de site</a>
+      <a href="protocollen.html">Protocollen</a>
+      <a href="mijn-profiel.html">Mijn profiel</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🦴 Voor therapeuten</div>
+    <h1>Aanmelden als therapeut</h1>
+    <p>Bent u gespecialiseerd in wervelkolomzorg — nek & hoofd, borstwervelkolom & ribben, of lage rug & SI-gewricht? Sluit u aan bij het Rug Nek Netwerk.</p>
+  </div>
+</section>
+
+<div class="pagina-inner">
+
+  <div class="stappen-grid">
+    <div class="stap"><div class="nr">1</div><h3>Praktijkcode</h3><p>Vul de code in die uw praktijk heeft ontvangen.</p></div>
+    <div class="stap"><div class="nr">2</div><h3>Uw gegevens</h3><p>Vul uw gegevens en specialisaties in.</p></div>
+    <div class="stap"><div class="nr">3</div><h3>Goedkeuring</h3><p>Wij controleren uw aanmelding.</p></div>
+    <div class="stap"><div class="nr">4</div><h3>Uw profiel</h3><p>Na goedkeuring ontvangt u een uitnodiging per e-mail.</p></div>
+  </div>
+
+  <div id="form-container">
+
+    <!-- STAP 1: PRAKTIJKCODE -->
+    <div class="form-sectie">
+      <div class="form-sectie-titel">🔑 1. Praktijkcode</div>
+      <div class="form-group">
+        <label>Code van uw praktijk <span class="req">*</span></label>
+        <div class="code-rij">
+          <div class="code-input" style="flex:1">
+            <input type="text" id="praktijk-code" placeholder="ABC123" maxlength="6" oninput="this.value=this.value.toUpperCase(); resetCodeStatus()" />
+          </div>
+          <button type="button" class="code-check-btn" onclick="controleerCode()">Controleer</button>
+        </div>
+        <div class="code-status" id="code-status"></div>
+        <div class="geen-code-blok">
+          💡 <strong>Geen code?</strong> Vraag de praktijkcode op bij uw praktijkhouder. Is uw praktijk nog niet aangesloten bij het netwerk? Dan kan uw praktijkhouder de praktijk aanmelden via
+          <a href="https://vindjefysio.net/aanmelden.html?via=rugnek.net">vindjefysio.net/aanmelden</a>.
+        </div>
+      </div>
+    </div>
+
+    <!-- STAP 2: PERSOONLIJKE GEGEVENS -->
+    <div class="form-sectie">
+      <div class="form-sectie-titel">👤 2. Uw gegevens</div>
+      <div class="form-row">
+        <div class="form-group"><label>Voornaam <span class="req">*</span></label><input type="text" id="voornaam" placeholder="Anna" /></div>
+        <div class="form-group"><label>Achternaam <span class="req">*</span></label><input type="text" id="achternaam" placeholder="de Vries" /></div>
+      </div>
+      <div class="form-group">
+        <label>E-mailadres <span class="req">*</span></label>
+        <input type="email" id="email" placeholder="anna@praktijk.nl" />
+        <p class="form-hint">🔒 Op dit adres ontvangt u na goedkeuring uw uitnodiging om in te loggen.</p>
+      </div>
+      <div class="form-group"><label>Telefoonnummer</label><input type="tel" id="telefoon" placeholder="06-00000000" /></div>
+    </div>
+
+    <!-- STAP 3: DISCIPLINE -->
+    <div class="form-sectie">
+      <div class="form-sectie-titel">⚕️ 3. Uw discipline(s)</div>
+      <p style="font-size:0.83rem;color:var(--text-muted);margin-bottom:14px">Selecteer uw beroep(en). Meerdere keuzes mogelijk.</p>
+      <div class="keuze-grid" id="disciplines-grid"></div>
+    </div>
+
+    <!-- STAP 4: SPECIALISATIES PER DOMEIN -->
+    <div class="form-sectie">
+      <div class="form-sectie-titel">🦴 4. Uw specialisaties binnen het Rug Nek Netwerk</div>
+      <p style="font-size:0.83rem;color:var(--text-muted);margin-bottom:14px">Het netwerk kent drie domeinen. Selecteer per domein de specialisaties waarin u geschoold en actief bent. Minimaal één specialisatie.</p>
+      <div id="domeinen-container"></div>
+    </div>
+
+    <!-- STAP 5: OVER U -->
+    <div class="form-sectie">
+      <div class="form-sectie-titel">✏️ 5. Over u (optioneel)</div>
+      <div class="form-group">
+        <label>Korte bio</label>
+        <textarea id="bio" placeholder="Vertel in 2-3 zinnen over uw achtergrond en werkwijze. Dit wordt zichtbaar op uw profiel." maxlength="400" oninput="document.getElementById('bio-tekens').textContent=this.value.length"></textarea>
+        <p class="form-hint"><span id="bio-tekens">0</span>/400 tekens</p>
+      </div>
+    </div>
+
+    <!-- BEVESTIGING -->
+    <div class="form-sectie">
+      <div class="form-sectie-titel">✅ Bevestiging</div>
+      <div class="checkbox-wrap">
+        <input type="checkbox" id="protocol-akkoord" />
+        <label for="protocol-akkoord">Ik bevestig dat ik werk volgens de behandelprotocollen van het Rug Nek Netwerk.</label>
+      </div>
+      <div class="checkbox-wrap">
+        <input type="checkbox" id="privacy-akkoord" />
+        <label for="privacy-akkoord">Ik ga akkoord met de verwerking van mijn gegevens voor zichtbaarheid binnen het netwerk, zoals beschreven in de <a href="privacy.html">privacyverklaring</a>.</label>
+      </div>
+    </div>
+
+    <input type="text" name="website_url" id="website_url" style="display:none" tabindex="-1" autocomplete="off" />
+    <button class="btn-submit" id="btn-submit" onclick="verstuurAanmelding()">Aanmelding versturen →</button>
+  </div>
+
+  <div class="succes-blok" id="succes-blok">
+    <div class="icon">✅</div>
+    <h2>Aanmelding ontvangen!</h2>
+    <p>Bedankt voor uw aanmelding bij het Rug Nek Netwerk. Wij controleren uw gegevens en na goedkeuring ontvangt u per e-mail een uitnodiging om uw profiel te activeren.</p>
+    <p style="margin-top:14px"><a href="index.html" style="color:var(--teal);font-weight:600">← Terug naar rugnek.net</a></p>
+  </div>
+
+</div>
+
+<footer>
+  <p><strong style="color:white">Rug Nek Netwerk</strong> · Onderdeel van het <a href="https://vindjefysio.net">VindJeFysio Netwerk</a> · <a href="privacy.html">Privacyverklaring</a></p>
+</footer>
+
+<script>
+const SUPABASE_URL = 'https://islujznszevdynguhjdc.supabase.co';
+const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlzbHVqem5zemV2ZHluZ3VoamRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NDYzMDAsImV4cCI6MjA5NzIyMjMwMH0.wh3RXZRKfpfArr3YBYu8ktE7xv1inwDD72Vq3LJl3QQ';
+const HEADERS = { 'apikey': ANON_KEY, 'Authorization': `Bearer ${ANON_KEY}`, 'Content-Type': 'application/json' };
+
+// ═══════════════════════════════════════════════════════════════
+// ⚠️ ZELFDE PLACEHOLDER-IDs (901–912) ALS IN index.html ⚠️
+// Na aanmaken in Supabase: in BEIDE bestanden vervangen door de
+// echte subcategorie-ids (en straks ook in sync_protocollen.py).
+// ═══════════════════════════════════════════════════════════════
+const DOMEINEN = {
+  cervicaal: {
+    naam: 'Nek & hoofd', anatomie: 'Cervicale wervelkolom',
+    kleur: '#1BA098', kleurLicht: '#E6F5F4', icoon: '💆',
+    subcats: [
+      { id: 901, naam: 'Nekpijn & whiplash', sub: 'Stijve nek, whiplash, spierspanning' },
+      { id: 902, naam: 'Hoofdpijn & duizeligheid', sub: 'Spanningshoofdpijn, cervicogene hoofdpijn, duizelig' },
+      { id: 903, naam: 'Nekhernia & uitstraling', sub: 'Uitstraling naar arm, tintelingen, kracht' },
+      { id: 904, naam: 'Operatie: voorbereiding & revalidatie', sub: 'Voor en na een nekoperatie' },
+    ]
+  },
+  thoracaal: {
+    naam: 'Borstwervelkolom & ribben', anatomie: 'Thoracale wervelkolom',
+    kleur: '#6ABF4B', kleurLicht: '#F0F9EB', icoon: '🫁',
+    subcats: [
+      { id: 905, naam: 'Midden-rugpijn', sub: 'Pijn tussen de schouderbladen, blokkade' },
+      { id: 906, naam: 'Ribklachten & ademhaling', sub: 'Ribblokkade, pijn bij ademen, na ribbreuk' },
+      { id: 907, naam: 'Houding, kyfose & scoliose', sub: 'Kromme rug, houdingsklachten, scoliose' },
+      { id: 908, naam: 'Operatie: voorbereiding & revalidatie', sub: 'Voor en na een operatie aan de borstwervelkolom' },
+    ]
+  },
+  lumbosacraal: {
+    naam: 'Lage rug & SI-gewricht', anatomie: 'Lumbo-sacrale wervelkolom',
+    kleur: '#2E7DD1', kleurLicht: '#EAF2FB', icoon: '🔻',
+    subcats: [
+      { id: 909, naam: 'Lage rugpijn', sub: 'Acute of chronische lage rugklachten, spit' },
+      { id: 910, naam: 'Hernia & ischias', sub: 'Uitstraling naar been, zenuwpijn, tintelingen' },
+      { id: 911, naam: 'SI-gewricht & bekken', sub: 'SI-klachten, bekkeninstabiliteit, bekkenpijn' },
+      { id: 912, naam: 'Operatie: voorbereiding & revalidatie', sub: 'Voor en na een lage-rugoperatie' },
+    ]
+  }
+};
+const LUMBOSACRAAL_IDS = DOMEINEN.lumbosacraal.subcats.map(s => s.id);
+
+const DISCIPLINES = [
+  { naam: 'Fysiotherapeut', sub: 'Algemeen fysiotherapeut' },
+  { naam: 'Manueel therapeut', sub: 'Geregistreerd manueel therapeut' },
+  { naam: 'Sportfysiotherapeut', sub: '' },
+  { naam: 'Oefentherapeut', sub: 'Cesar / Mensendieck' },
+  { naam: 'Ergotherapeut', sub: '' },
+];
+
+let gecontroleerdePraktijk = null;
+
+function renderDisciplines() {
+  const grid = document.getElementById('disciplines-grid');
+  grid.innerHTML = DISCIPLINES.map((d, i) => `
+    <label class="keuze-optie" id="disc-${i}">
+      <input type="checkbox" value="${d.naam}" onchange="this.closest('.keuze-optie').classList.toggle('gekozen', this.checked)" />
+      <div>
+        <div class="naam">${d.naam}</div>
+        ${d.sub ? `<div class="sub">${d.sub}</div>` : ''}
+      </div>
+    </label>`).join('');
+}
+
+function renderDomeinen() {
+  const container = document.getElementById('domeinen-container');
+  container.innerHTML = Object.entries(DOMEINEN).map(([key, d]) => {
+    const opties = d.subcats.map(s => `
+      <label class="spec-optie">
+        <input type="checkbox" class="spec-checkbox" value="${s.id}" onchange="specGewijzigd(this)" />
+        <div>
+          <div class="naam">${s.naam}</div>
+          <div class="sub">${s.sub}</div>
+        </div>
+      </label>`).join('');
+    const lrnBlok = key === 'lumbosacraal' ? `
+      <div class="lrn-blok" id="lrn-blok">
+        <div class="lrn-titel">🔗 Lage Rugnetwerk (regio Breda)</div>
+        <p>Deelname aan het domein Lage rug & SI-gewricht vereist aansluiting bij het Lage Rugnetwerk. Bent u nog niet aangesloten? Dan nemen wij na uw aanmelding contact op over de aansluiting.</p>
+        <div class="checkbox-wrap">
+          <input type="checkbox" id="lrn-akkoord" />
+          <label for="lrn-akkoord">Ik ben aangesloten bij het Lage Rugnetwerk, of ik ga akkoord met aansluiting als voorwaarde voor deelname aan dit domein. <span style="color:#2E7DD1">*</span></label>
+        </div>
+      </div>` : '';
+    return `
+      <div class="domein-blok" style="--db:${d.kleur};--dbl:${d.kleurLicht}">
+        <div class="domein-kop">
+          <span class="icoon">${d.icoon}</span>
+          <span class="titel">${d.naam}</span>
+          <span class="anatomie">${d.anatomie}</span>
+        </div>
+        <div class="domein-opties">${opties}</div>
+        ${lrnBlok}
+      </div>`;
+  }).join('');
+}
+
+function specGewijzigd(cb) {
+  cb.closest('.spec-optie').classList.toggle('gekozen', cb.checked);
+  // Toon/verberg Lage Rugnetwerk-bevestiging
+  const geselecteerd = gekozenSubcatIds();
+  const lumboActief = geselecteerd.some(id => LUMBOSACRAAL_IDS.includes(id));
+  document.getElementById('lrn-blok')?.classList.toggle('zichtbaar', lumboActief);
+}
+
+function gekozenSubcatIds() {
+  return [...document.querySelectorAll('.spec-checkbox:checked')].map(c => parseInt(c.value));
+}
+
+function resetCodeStatus() {
+  gecontroleerdePraktijk = null;
+  const status = document.getElementById('code-status');
+  status.className = 'code-status';
+  status.textContent = '';
+}
+
+async function controleerCode() {
+  const code = document.getElementById('praktijk-code').value.trim().toUpperCase();
+  const status = document.getElementById('code-status');
+  if (code.length < 6) {
+    status.className = 'code-status fout';
+    status.textContent = 'Vul de volledige code van 6 tekens in.';
+    return;
+  }
+  try {
+    const resp = await fetch(`${SUPABASE_URL}/rest/v1/praktijken?praktijk_code=eq.${encodeURIComponent(code)}&actief=eq.true&select=id,naam,stad`, { headers: HEADERS });
+    const praktijken = await resp.json();
+    if (Array.isArray(praktijken) && praktijken.length > 0) {
+      gecontroleerdePraktijk = praktijken[0];
+      status.className = 'code-status ok';
+      status.innerHTML = `✅ Code gevonden: <strong>${gecontroleerdePraktijk.naam}</strong> in ${gecontroleerdePraktijk.stad}. U kunt verder met uw aanmelding.`;
+    } else {
+      gecontroleerdePraktijk = null;
+      status.className = 'code-status fout';
+      status.textContent = '❌ Deze code is niet gevonden of de praktijk is nog niet goedgekeurd. Controleer de code bij uw praktijkhouder.';
+    }
+  } catch(e) {
+    status.className = 'code-status fout';
+    status.textContent = 'Er ging iets mis bij het controleren. Probeer het opnieuw.';
+  }
+}
+
+async function verstuurAanmelding() {
+  if (document.getElementById('website_url').value) return; // honeypot
+
+  if (!gecontroleerdePraktijk) {
+    alert('Controleer eerst uw praktijkcode (stap 1). Klik op "Controleer" naast het codeveld.');
+    document.getElementById('praktijk-code').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  const voornaam = document.getElementById('voornaam').value.trim();
+  const achternaam = document.getElementById('achternaam').value.trim();
+  const email = document.getElementById('email').value.trim();
+  if (!voornaam) { alert('Vul uw voornaam in.'); return; }
+  if (!achternaam) { alert('Vul uw achternaam in.'); return; }
+  if (!email || !email.includes('@')) { alert('Vul een geldig e-mailadres in.'); return; }
+
+  const disciplines = [...document.querySelectorAll('#disciplines-grid input:checked')].map(c => c.value);
+  if (disciplines.length === 0) { alert('Selecteer minimaal één discipline (stap 3).'); return; }
+
+  const subcatIds = gekozenSubcatIds();
+  if (subcatIds.length === 0) { alert('Selecteer minimaal één specialisatie (stap 4).'); return; }
+
+  // Lage Rugnetwerk-eis bij lumbosacrale specialisaties
+  const lumboGekozen = subcatIds.some(id => LUMBOSACRAAL_IDS.includes(id));
+  if (lumboGekozen && !document.getElementById('lrn-akkoord')?.checked) {
+    alert('U heeft een specialisatie in het domein Lage rug & SI-gewricht gekozen. Bevestig de aansluiting bij het Lage Rugnetwerk (blauw blok in stap 4).');
+    document.getElementById('lrn-blok').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  if (!document.getElementById('protocol-akkoord').checked) { alert('Bevestig dat u werkt volgens de behandelprotocollen.'); return; }
+  if (!document.getElementById('privacy-akkoord').checked) { alert('Vink het privacyakkoord aan.'); return; }
+
+  const btn = document.getElementById('btn-submit');
+  btn.textContent = 'Versturen...'; btn.disabled = true;
+
+  try {
+    // 1. Therapeut aanmaken (niet actief — wacht op goedkeuring in beheer)
+    const lrnNotitie = lumboGekozen ? ' [LRN-akkoord: ja]' : '';
+    const therapeutResp = await fetch(`${SUPABASE_URL}/rest/v1/therapeuten`, {
+      method: 'POST',
+      headers: { ...HEADERS, 'Prefer': 'return=representation' },
+      body: JSON.stringify({
+        voornaam, achternaam, email,
+        telefoon: document.getElementById('telefoon').value.trim(),
+        bio: document.getElementById('bio').value.trim() + lrnNotitie,
+        disciplines,
+        code: document.getElementById('praktijk-code').value.trim().toUpperCase(),
+        aangemeld_via: 'rugnek.net',
+        actief: false
+      })
+    });
+    if (!therapeutResp.ok) throw new Error('Therapeut aanmaken mislukt: ' + await therapeutResp.text());
+    const nieuweTherapeut = (await therapeutResp.json())[0];
+
+    // 2. Koppel aan praktijk
+    const koppelResp = await fetch(`${SUPABASE_URL}/rest/v1/therapeut_praktijken`, {
+      method: 'POST',
+      headers: HEADERS,
+      body: JSON.stringify({ therapeut_id: nieuweTherapeut.id, praktijk_id: gecontroleerdePraktijk.id })
+    });
+    if (!koppelResp.ok) console.warn('Praktijkkoppeling mislukt:', await koppelResp.text());
+
+    // 3. Koppel aan specialisaties
+    for (const subcatId of subcatIds) {
+      const scResp = await fetch(`${SUPABASE_URL}/rest/v1/therapeut_subcategorieen`, {
+        method: 'POST',
+        headers: HEADERS,
+        body: JSON.stringify({ therapeut_id: nieuweTherapeut.id, subcategorie_id: subcatId })
+      });
+      if (!scResp.ok) console.warn('Subcategorie-koppeling mislukt:', await scResp.text());
+    }
+
+    document.getElementById('form-container').style.display = 'none';
+    document.getElementById('succes-blok').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch(e) {
+    console.error(e);
+    alert('Er ging iets mis bij het versturen. Probeer het opnieuw of mail naar info@vindjefysio.net.');
+    btn.textContent = 'Aanmelding versturen →'; btn.disabled = false;
+  }
+}
+
+renderDisciplines();
+renderDomeinen();
+</script>
+</body>
+</html>
