@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rug Nek Netwerk – Gespecialiseerde wervelkolomzorg bij u in de buurt</title>
+  <meta name="description" content="Vind een gespecialiseerde therapeut voor rug- en nekklachten. Nek & hoofd, borstwervelkolom & ribben, lage rug & SI-gewricht — inclusief voorbereiding op en revalidatie na een operatie." />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    @font-face { font-family: 'Inter'; src: url('fonts/inter-v20-latin-300.woff2') format('woff2'); font-weight: 300; font-display: swap; }
+    @font-face { font-family: 'Inter'; src: url('fonts/inter-v20-latin-regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'Inter'; src: url('fonts/inter-v20-latin-500.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+    @font-face { font-family: 'Inter'; src: url('fonts/inter-v20-latin-600.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+    @font-face { font-family: 'Inter'; src: url('fonts/inter-v20-latin-700.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      /* Rug Nek Netwerk — palet afgeleid van het wervelkolom-logo */
+      --teal: #1BA098; --teal-light: #E6F5F4; --teal-dark: #14807A;
+      --groen: #6ABF4B; --groen-light: #F0F9EB;
+      --blauw: #2E7DD1; --blauw-light: #EAF2FB;
+      --oranje: #F5A623;
+      --navy: #22384A; --navy-dark: #16242F;
+      --grey-bg: #F8F9FA; --grey-border: #E8ECF0;
+      --text: #22384A; --text-muted: #75828E; --white: #FFFFFF;
+      /* Domeinkleuren — matchen de zones van het logo */
+      --dom-cervicaal: #1BA098;
+      --dom-thoracaal: #6ABF4B;
+      --dom-lumbosacraal: #2E7DD1;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; font-size: 16px; color: var(--text); background: var(--white); line-height: 1.6; }
+
+    /* HEADER */
+    header { background: var(--white); border-bottom: 1px solid var(--grey-border); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 clamp(1rem,4vw,2rem); display: flex; align-items: center; justify-content: space-between; height: 72px; gap: 16px; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; flex-shrink: 0; }
+    .logo img { height: 48px; width: 48px; object-fit: contain; }
+    .logo-text { font-weight: 700; font-size: 1rem; color: var(--navy); line-height: 1.2; }
+    .logo-text span { color: var(--teal); }
+    nav { display: flex; gap: 4px; align-items: center; }
+    nav a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; font-weight: 500; padding: 7px 12px; border-radius: 8px; transition: all 0.2s; white-space: nowrap; }
+    nav a:hover { background: var(--grey-bg); color: var(--navy); }
+    nav a.cta { background: var(--teal); color: var(--white); font-weight: 700; }
+    nav a.cta:hover { background: var(--teal-dark); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; z-index: 1001; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--navy); border-radius: 2px; transition: transform 0.25s, opacity 0.2s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* HERO */
+    .hero { background: linear-gradient(160deg, #1BA098 0%, #6ABF4B 45%, #2E7DD1 100%); position: relative; padding: 80px 24px 0; text-align: center; overflow: hidden; }
+    .hero::before { content:''; position:absolute; inset:0; background:rgba(0,0,0,0.35); }
+    .hero-content { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding-bottom: 80px; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.35); color: rgba(255,255,255,0.95); font-size: 0.75rem; font-weight: 700; padding: 5px 16px; border-radius: 999px; margin-bottom: 20px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .hero h1 { font-size: clamp(2rem,5vw,3rem); font-weight: 700; color: var(--white); line-height: 1.15; margin-bottom: 16px; letter-spacing: -0.02em; text-shadow: 0 2px 12px rgba(0,0,0,0.2); }
+    .hero h1 em { font-style: normal; color: #FFE082; }
+    .hero p { color: rgba(255,255,255,0.9); font-size: 1.05rem; max-width: 560px; margin: 0 auto 36px; line-height: 1.7; }
+    .hero-wave { display: block; width: 100%; margin-bottom: -2px; }
+
+    /* ZOEKSECTIE */
+    .zoek-sectie { background: var(--grey-bg); padding: 0 24px 48px; }
+    .zoek-inner { max-width: 720px; margin: 0 auto; }
+    .zoek-kaart { background: var(--white); border-radius: 20px; padding: 28px; box-shadow: 0 8px 40px rgba(0,0,0,0.12); margin-top: -48px; position: relative; z-index: 10; border: 1px solid var(--grey-border); }
+    .zoek-titel { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 14px; }
+
+    /* DOMEIN KNOPPEN boven zoekbalk */
+    .domein-knoppen { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
+    .domein-knop { display: inline-flex; align-items: center; gap: 7px; padding: 7px 15px; border-radius: 999px; border: 1.5px solid var(--grey-border); background: var(--white); color: var(--text-muted); font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+    .domein-knop .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--dk, var(--teal)); flex-shrink: 0; }
+    .domein-knop:hover { border-color: var(--dk, var(--teal)); color: var(--dk, var(--teal)); }
+    .domein-knop.actief { background: var(--dk, var(--teal)); border-color: var(--dk, var(--teal)); color: var(--white); }
+    .domein-knop.actief .dot { background: rgba(255,255,255,0.6); }
+
+    /* ZOEKBALK met locatieveld rechts */
+    .zoek-balk { display: flex; gap: 8px; background: var(--grey-bg); border: 2px solid var(--grey-border); border-radius: 12px; padding: 6px; margin-bottom: 12px; transition: border-color 0.2s; }
+    .zoek-balk:focus-within { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(27,160,152,0.12); }
+    .zoek-input { flex: 1; min-width: 0; padding: 10px 14px; border: none; background: transparent; font-family: 'Inter', sans-serif; font-size: 0.95rem; color: var(--text); outline: none; }
+    .zoek-scheiding { width: 1px; background: var(--grey-border); margin: 4px 0; flex-shrink: 0; }
+    .zoek-locatie-input { width: 160px; padding: 10px 14px; border: none; background: transparent; font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--text); outline: none; flex-shrink: 0; }
+    .zoek-locatie-input::placeholder { color: var(--text-muted); }
+    .zoek-btn-inline { padding: 10px 18px; background: var(--teal); color: var(--white); border: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: background 0.2s; white-space: nowrap; flex-shrink: 0; }
+    .zoek-btn-inline:hover { background: var(--teal-dark); }
+    .zoek-wis { background: none; border: none; cursor: pointer; font-size: 0.85rem; color: var(--text-muted); padding: 4px 8px; display: none; flex-shrink: 0; align-self: center; }
+
+    /* SUGGESTIES onder zoekbalk */
+    .cat-suggesties { display: flex; flex-direction: column; gap: 4px; }
+    .cat-suggestie { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1.5px solid var(--grey-border); border-radius: 10px; cursor: pointer; transition: all 0.15s; background: var(--white); }
+    .cat-suggestie:hover { border-color: var(--sk, var(--teal)); background: var(--grey-bg); }
+    .cat-suggestie .icon { font-size: 1.2rem; flex-shrink: 0; }
+    .cat-suggestie .naam { font-size: 0.88rem; font-weight: 700; color: var(--navy); }
+    .cat-suggestie .sub { font-size: 0.75rem; color: var(--text-muted); }
+    .cat-suggestie .domein-tag { margin-left: auto; font-size: 0.68rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: var(--sk, var(--teal)); color: white; white-space: nowrap; }
+    .zoek-hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 12px; }
+
+    /* DOMEINEN SECTIE */
+    .domeinen-sectie { padding: 56px 24px; background: var(--white); }
+    .sectie-inner { max-width: 1100px; margin: 0 auto; }
+    .sectie-eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 8px; }
+    .sectie-titel { font-size: clamp(1.4rem,3vw,1.9rem); font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+    .sectie-sub { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 32px; max-width: 600px; }
+    .domeinen-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; }
+    .domein-kaart { background: var(--white); border: 1.5px solid var(--grey-border); border-radius: 18px; padding: 26px; position: relative; overflow: hidden; transition: all 0.2s; }
+    .domein-kaart::before { content:''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: var(--dk); }
+    .domein-kaart:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.10); }
+    .domein-icoon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.7rem; margin-bottom: 14px; background: var(--dkl); }
+    .domein-naam { font-size: 1.05rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .domein-anatomie { font-size: 0.75rem; font-weight: 600; color: var(--dk); margin-bottom: 12px; }
+    .domein-klachten { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .klacht-chip { display: flex; align-items: center; gap: 8px; padding: 9px 13px; border: 1.5px solid var(--grey-border); border-radius: 10px; cursor: pointer; transition: all 0.15s; font-size: 0.83rem; font-weight: 600; color: var(--navy); background: var(--white); }
+    .klacht-chip:hover { border-color: var(--dk); background: var(--dkl); }
+    .klacht-chip.actief { border-color: var(--dk); background: var(--dkl); }
+    .klacht-chip .chip-icon { font-size: 1rem; flex-shrink: 0; }
+    .klacht-chip .chip-sub { font-size: 0.72rem; font-weight: 400; color: var(--text-muted); }
+    .klacht-chip.operatie { border-style: dashed; }
+    .domein-alles-btn { width: 100%; padding: 10px; background: var(--dk); color: white; border: none; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+    .domein-alles-btn:hover { opacity: 0.88; }
+    .lrn-noot { margin-top: 10px; font-size: 0.72rem; color: var(--text-muted); line-height: 1.5; background: var(--grey-bg); border-radius: 8px; padding: 8px 12px; }
+
+    /* RESULTATEN */
+    .resultaten-sectie { padding: 0 24px 56px; background: var(--grey-bg); }
+    .resultaten-inner { max-width: 1100px; margin: 0 auto; }
+    .actief-filter { background: var(--white); border: 1px solid var(--grey-border); border-radius: 14px; padding: 14px 18px; margin: 24px 0 16px; display: none; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .actief-filter-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--ftk, var(--teal)); color: var(--white); font-size: 0.82rem; font-weight: 700; padding: 5px 12px; border-radius: 999px; }
+    .actief-filter-wis { background: none; border: none; cursor: pointer; font-size: 0.82rem; color: var(--text-muted); padding: 4px 8px; border-radius: 6px; font-family: 'Inter', sans-serif; }
+    .actief-filter-wis:hover { background: var(--grey-bg); color: var(--navy); }
+    .disc-filter-rij { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .disc-filter-btn { padding: 6px 14px; border: 1.5px solid var(--grey-border); border-radius: 999px; background: var(--white); color: var(--text-muted); font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .disc-filter-btn:hover { border-color: var(--teal); color: var(--teal); }
+    .disc-filter-btn.actief { background: var(--teal); border-color: var(--teal); color: var(--white); }
+    .resultaten-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 16px; }
+    .resultaten-aantal { font-size: 0.88rem; color: var(--text-muted); }
+    .resultaten-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 768px) { .resultaten-layout { grid-template-columns: 1fr; } }
+    .praktijk-lijst { display: flex; flex-direction: column; gap: 12px; max-height: 600px; overflow-y: auto; }
+    .praktijk-kaart { background: var(--white); border: 1.5px solid var(--grey-border); border-radius: 14px; padding: 18px; cursor: pointer; transition: all 0.2s; }
+    .praktijk-kaart:hover, .praktijk-kaart.actief { border-color: var(--teal); box-shadow: 0 4px 16px rgba(27,160,152,0.12); }
+    .praktijk-naam { font-size: 0.95rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .praktijk-adres { font-size: 0.82rem; color: var(--text-muted); }
+    .kaart-sectie { position: sticky; top: 90px; }
+    .kaart-header { background: var(--white); border: 1px solid var(--grey-border); border-radius: 14px 14px 0 0; padding: 12px 16px; font-size: 0.85rem; font-weight: 600; color: var(--navy); border-bottom: none; }
+    .kaart-wrap { border-radius: 0 0 14px 14px; overflow: hidden; border: 1px solid var(--grey-border); height: 540px; }
+    #kaart { height: 100%; }
+    .geen-resultaten { text-align: center; padding: 48px 20px; color: var(--text-muted); }
+    .geen-icon { font-size: 3rem; margin-bottom: 12px; }
+
+    /* AANMELDEN CTA */
+    .aanmeld-sectie { padding: 56px 24px; background: linear-gradient(135deg, #1BA098 0%, #2E7DD1 100%); }
+    .aanmeld-inner { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 700px) { .aanmeld-inner { grid-template-columns: 1fr; } }
+    .aanmeld-kaart { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 16px; padding: 28px; color: var(--white); text-align: center; }
+    .aanmeld-kaart h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
+    .aanmeld-kaart p { font-size: 0.88rem; opacity: 0.88; margin-bottom: 20px; line-height: 1.6; }
+    .aanmeld-btn { display: inline-block; background: var(--white); color: var(--teal); padding: 11px 24px; border-radius: 8px; font-size: 0.9rem; font-weight: 700; text-decoration: none; }
+    .aanmeld-btn.donker { background: var(--navy); color: var(--white); }
+
+    footer { background: var(--navy-dark); color: rgba(255,255,255,0.5); padding: 36px 24px; font-size: 0.82rem; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
+
+    /* MOBIEL */
+    @media (max-width: 700px) {
+      .hamburger { display: flex; }
+      nav { display: none; position: absolute; top: 72px; left: 0; right: 0; background: var(--white); flex-direction: column; align-items: stretch; padding: 12px 16px 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); border-top: 1px solid var(--grey-border); }
+      nav.open { display: flex; }
+      nav a { padding: 12px 14px; white-space: normal; }
+      nav a.cta { margin-top: 8px; text-align: center; }
+      .zoek-balk { flex-direction: column; }
+      .zoek-scheiding { display: none; }
+      .zoek-locatie-input { width: 100%; flex-shrink: 1; }
+      .zoek-btn-inline { width: 100%; }
+      .zoek-wis { align-self: flex-end; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <img src="rugnek_logo.png" alt="Rug Nek Netwerk" />
+      <div class="logo-text"><span>Rug Nek</span> Netwerk</div>
+    </a>
+    <div class="hamburger" onclick="this.classList.toggle('open'); document.getElementById('main-nav').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+    <nav id="main-nav">
+      <a href="#zoeken">Zoeken</a>
+      <a href="#domeinen">Domeinen</a>
+      <a href="protocollen.html">Protocollen</a>
+      <a href="mijn-profiel.html">Mijn profiel</a>
+      <a href="therapeut-aanmelden.html">Aanmelden als therapeut</a>
+      <a href="https://vindjefysio.net/aanmelden.html?via=rugnek.net" class="cta">Locatie aanmelden</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🦴 Het netwerk voor wervelkolomzorg</div>
+    <h1>Gespecialiseerde zorg voor<br><em>rug en nek</em></h1>
+    <p>Van nekpijn en hoofdpijn tot lage rugklachten en het SI-gewricht — vind een specialist voor uw klacht bij u in de buurt, ook rondom een operatie.</p>
+  </div>
+  <svg class="hero-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#F8F9FA"/>
+  </svg>
+</section>
+
+<section class="zoek-sectie" id="zoeken">
+  <div class="zoek-inner">
+    <div class="zoek-kaart">
+      <div class="zoek-titel">🔍 Zoek op klacht, gebied of behandeling</div>
+
+      <!-- Domein-filters boven de zoekbalk -->
+      <div class="domein-knoppen" id="domein-knoppen"></div>
+
+      <div class="zoek-balk">
+        <input type="text" class="zoek-input" id="zoek-input"
+          placeholder="Bijv. lage rugpijn, nekhernia, hoofdpijn..."
+          oninput="handleZoekInput(this.value)"
+          onkeydown="if(event.key==='Enter') voerZoekopdracht()" />
+        <button class="zoek-wis" id="zoek-wis" onclick="wisZoekopdracht()">✕</button>
+        <div class="zoek-scheiding"></div>
+        <input type="text" class="zoek-locatie-input" id="zoek-locatie"
+          placeholder="📍 Stad of postcode"
+          onkeydown="if(event.key==='Enter') voerZoekopdracht()" />
+        <button class="zoek-btn-inline" onclick="voerZoekopdracht()">Zoeken</button>
+      </div>
+
+      <div class="cat-suggesties" id="cat-suggesties"></div>
+
+      <p class="zoek-hint">💡 Tip: zoek op klacht (bijv. "ischias") of kies hieronder een gebied</p>
+    </div>
+  </div>
+</section>
+
+<!-- DE DRIE DOMEINEN -->
+<section class="domeinen-sectie" id="domeinen">
+  <div class="sectie-inner">
+    <div class="sectie-eyebrow">Drie gebieden, één netwerk</div>
+    <div class="sectie-titel">Waar zit uw klacht?</div>
+    <div class="sectie-sub">De wervelkolom bestaat uit drie gebieden. Kies uw gebied en zie direct de klachten waar onze specialisten bij helpen — inclusief voorbereiding op en revalidatie na een operatie.</div>
+    <div class="domeinen-grid" id="domeinen-grid">
+      <!-- Wordt gevuld via JS op basis van DOMEINEN config -->
+    </div>
+  </div>
+</section>
+
+<!-- RESULTATEN -->
+<section class="resultaten-sectie" id="resultaten">
+  <div class="resultaten-inner">
+    <div class="actief-filter" id="actief-filter">
+      <span style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted)">Gevonden voor</span>
+      <span class="actief-filter-tag" id="actief-filter-tag"></span>
+      <button class="actief-filter-wis" onclick="wisFilter()">✕ Wis filter</button>
+      <div class="disc-filter-rij" id="disc-filter-rij" style="width:100%;margin-top:4px"></div>
+    </div>
+    <div class="resultaten-header">
+      <div class="resultaten-aantal" id="resultaten-aantal"></div>
+    </div>
+    <div class="resultaten-layout">
+      <div class="praktijk-lijst" id="praktijk-lijst">
+        <div class="geen-resultaten"><div class="geen-icon">🦴</div><div>Kies een gebied of zoek op klacht.</div></div>
+      </div>
+      <div class="kaart-sectie">
+        <div class="kaart-header" id="kaart-header">🗺️ Kaart</div>
+        <div class="kaart-wrap"><div id="kaart"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AANMELDEN CTA -->
+<section class="aanmeld-sectie">
+  <div class="sectie-inner">
+    <div style="text-align:center;color:white;margin-bottom:32px">
+      <div style="font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;opacity:0.8;margin-bottom:8px">Doe mee</div>
+      <h2 style="font-size:clamp(1.4rem,3vw,1.9rem);font-weight:700;margin-bottom:10px">Word onderdeel van het netwerk</h2>
+      <p style="opacity:0.88;max-width:520px;margin:0 auto;font-size:0.95rem">Bent u gespecialiseerd in wervelkolomzorg of heeft u een praktijk? Sluit u aan bij het Rug Nek Netwerk.</p>
+    </div>
+    <div class="aanmeld-inner">
+      <div class="aanmeld-kaart">
+        <div style="font-size:2rem;margin-bottom:12px">👩‍⚕️</div>
+        <h3>Aanmelden als therapeut</h3>
+        <p>Heeft u al een praktijkcode? Meld u aan als specialist in een of meer van de drie domeinen.</p>
+        <a class="aanmeld-btn" href="therapeut-aanmelden.html">Aanmelden als therapeut →</a>
+      </div>
+      <div class="aanmeld-kaart">
+        <div style="font-size:2rem;margin-bottom:12px">🏥</div>
+        <h3>Praktijk aanmelden</h3>
+        <p>Bent u praktijkhouder? Meld uw locatie aan en ontvang een praktijkcode.</p>
+        <a class="aanmeld-btn donker" href="https://vindjefysio.net/aanmelden.html?via=rugnek.net">Locatie aanmelden →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div><strong style="color:white">Rug Nek Netwerk</strong><br>Onderdeel van het <a href="https://vindjefysio.net">VindJeFysio Netwerk</a></div>
+    <div style="display:flex;gap:20px;flex-wrap:wrap">
+      <a href="privacy.html">Privacyverklaring</a>
+      <a href="https://vindjefysio.net">VindJeFysio.net</a>
+      <a href="mailto:info@vindjefysio.net">info@vindjefysio.net</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const SUPABASE_URL = 'https://islujznszevdynguhjdc.supabase.co';
+const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlzbHVqem5zemV2ZHluZ3VoamRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NDYzMDAsImV4cCI6MjA5NzIyMjMwMH0.wh3RXZRKfpfArr3YBYu8ktE7xv1inwDD72Vq3LJl3QQ';
+const HEADERS = { 'apikey': ANON_KEY, 'Authorization': `Bearer ${ANON_KEY}` };
+
+// ═══════════════════════════════════════════════════════════════
+// DOMEINEN-CONFIG — HET HART VAN DEZE SITE
+//
+// ⚠️ SUBCATEGORIE-IDs INVULLEN NA AANMAKEN IN SUPABASE ⚠️
+// De id-waarden hieronder (901 t/m 912) zijn PLACEHOLDERS.
+// Maak eerst de 12 subcategorieën aan in de subcategorieen-tabel
+// (categorie 6, of nieuwe categorie) en vervang dan elke id door
+// het echte Supabase-id. Zelfde ids straks ook in
+// therapeut-aanmelden.html en sync_protocollen.py gebruiken.
+// ═══════════════════════════════════════════════════════════════
+const DOMEINEN = {
+  cervicaal: {
+    naam: 'Nek & hoofd',
+    anatomie: 'Cervicale wervelkolom',
+    kleur: '#1BA098', kleurLicht: '#E6F5F4',
+    icoon: '💆',
+    subcats: [
+      { id: 901, icon: '😖', naam: 'Nekpijn & whiplash', sub: 'Stijve nek, whiplash, spierspanning', termen: ['nekpijn','nek','whiplash','stijve nek','nekklachten','spierspanning nek'] },
+      { id: 902, icon: '🤕', naam: 'Hoofdpijn & duizeligheid', sub: 'Spanningshoofdpijn, cervicogene hoofdpijn, duizelig', termen: ['hoofdpijn','duizeligheid','duizelig','migraine','spanningshoofdpijn','cervicogeen','draaierig'] },
+      { id: 903, icon: '⚡', naam: 'Nekhernia & uitstraling', sub: 'Uitstraling naar arm, tintelingen, kracht', termen: ['nekhernia','hernia nek','uitstraling arm','tintelingen','tintelende vingers','zenuwpijn arm'] },
+      { id: 904, icon: '🏥', naam: 'Operatie: voorbereiding & revalidatie', sub: 'Voor en na een nekoperatie', termen: ['nekoperatie','operatie nek','revalidatie nek','herstel nekoperatie','voorbereiding operatie'], operatie: true },
+    ]
+  },
+  thoracaal: {
+    naam: 'Borstwervelkolom & ribben',
+    anatomie: 'Thoracale wervelkolom',
+    kleur: '#6ABF4B', kleurLicht: '#F0F9EB',
+    icoon: '🫁',
+    subcats: [
+      { id: 905, icon: '😣', naam: 'Midden-rugpijn', sub: 'Pijn tussen de schouderbladen, blokkade', termen: ['midden rugpijn','tussen schouderbladen','borstwervel','thoracaal','blokkade rug','pijn borstkas'] },
+      { id: 906, icon: '🫸', naam: 'Ribklachten & ademhaling', sub: 'Ribblokkade, pijn bij ademen, na ribbreuk', termen: ['rib','ribklachten','ribblokkade','pijn bij ademen','ribbreuk','ademhaling pijn','intercostaal'] },
+      { id: 907, icon: '🧍', naam: 'Houding, kyfose & scoliose', sub: 'Kromme rug, houdingsklachten, scoliose', termen: ['houding','kyfose','scoliose','kromme rug','bochel','houdingsklachten','ronde rug'] },
+      { id: 908, icon: '🏥', naam: 'Operatie: voorbereiding & revalidatie', sub: 'Voor en na een operatie aan de borstwervelkolom', termen: ['operatie borstwervel','scoliose operatie','revalidatie thoracaal','herstel operatie rug'], operatie: true },
+    ]
+  },
+  lumbosacraal: {
+    naam: 'Lage rug & SI-gewricht',
+    anatomie: 'Lumbo-sacrale wervelkolom',
+    kleur: '#2E7DD1', kleurLicht: '#EAF2FB',
+    icoon: '🔻',
+    subcats: [
+      { id: 909, icon: '😫', naam: 'Lage rugpijn', sub: 'Acute of chronische lage rugklachten, spit', termen: ['lage rugpijn','rugpijn','spit','lumbago','lage rug','chronische rugpijn','acute rugpijn'] },
+      { id: 910, icon: '⚡', naam: 'Hernia & ischias', sub: 'Uitstraling naar been, zenuwpijn, tintelingen', termen: ['hernia','ischias','uitstraling been','zenuwpijn been','tintelingen been','hnp','beenpijn vanuit rug'] },
+      { id: 911, icon: '🔗', naam: 'SI-gewricht & bekken', sub: 'SI-klachten, bekkeninstabiliteit, bekkenpijn', termen: ['si gewricht','si-gewricht','sacro','bekken','bekkeninstabiliteit','bekkenpijn','si klachten'] },
+      { id: 912, icon: '🏥', naam: 'Operatie: voorbereiding & revalidatie', sub: 'Voor en na een lage-rugoperatie', termen: ['rugoperatie','hernia operatie','revalidatie rug','herstel rugoperatie','spondylodese','voorbereiding rugoperatie'], operatie: true },
+    ]
+  }
+};
+
+// Afgeleiden
+const ALLE_SUBCATS = Object.entries(DOMEINEN).flatMap(([dKey, d]) =>
+  d.subcats.map(s => ({ ...s, domein: dKey, domeinNaam: d.naam, kleur: d.kleur, kleurLicht: d.kleurLicht }))
+);
+const RN_SUBCAT_IDS = ALLE_SUBCATS.map(s => s.id);
+
+let allePraktijken = [];
+let gefilterdePraktijken = [];
+let actieveSubcat = null;
+let actiefDomein = null;       // domein-knop-filter boven de zoekbalk
+let kaart = null;
+let markers = [];
+const geocodeCache = {};
+
+// ── RENDER: domein-filterknoppen boven de zoekbalk ──
+function renderDomeinKnoppen() {
+  const c = document.getElementById('domein-knoppen');
+  c.innerHTML = Object.entries(DOMEINEN).map(([key, d]) => `
+    <button class="domein-knop ${actiefDomein === key ? 'actief' : ''}" style="--dk:${d.kleur}" onclick="toggleDomeinFilter('${key}')">
+      <span class="dot"></span>${d.naam}
+    </button>`).join('');
+}
+
+function toggleDomeinFilter(key) {
+  actiefDomein = (actiefDomein === key) ? null : key;
+  renderDomeinKnoppen();
+  // Als er al een zoekterm staat: suggesties opnieuw filteren
+  const q = document.getElementById('zoek-input').value;
+  if (q.trim()) handleZoekInput(q);
+}
+
+// ── RENDER: de drie domein-kaarten ──
+function renderDomeinen() {
+  const grid = document.getElementById('domeinen-grid');
+  grid.innerHTML = Object.entries(DOMEINEN).map(([key, d]) => {
+    const chips = d.subcats.map(s => `
+      <div class="klacht-chip ${s.operatie ? 'operatie' : ''}" id="chip-${s.id}" onclick="kiesSubcat(${s.id})">
+        <span class="chip-icon">${s.icon}</span>
+        <div>
+          <div>${s.naam}</div>
+          <div class="chip-sub">${s.sub}</div>
+        </div>
+      </div>`).join('');
+    const lrnNoot = key === 'lumbosacraal'
+      ? `<div class="lrn-noot">ℹ️ Therapeuten in dit domein zijn aangesloten bij het <strong>Lage Rugnetwerk</strong> (regio Breda) en werken volgens de netwerkprotocollen.</div>`
+      : '';
+    return `
+      <div class="domein-kaart" style="--dk:${d.kleur};--dkl:${d.kleurLicht}">
+        <div class="domein-icoon">${d.icoon}</div>
+        <div class="domein-naam">${d.naam}</div>
+        <div class="domein-anatomie">${d.anatomie}</div>
+        <div class="domein-klachten">${chips}</div>
+        <button class="domein-alles-btn" onclick="kiesDomein('${key}')">Alle specialisten ${d.naam.toLowerCase()} →</button>
+        ${lrnNoot}
+      </div>`;
+  }).join('');
+}
+
+// ── GEOCODING ──
+async function geocodeAdres(straat, stad) {
+  const query = `${straat}, ${stad}, Nederland`;
+  if (geocodeCache[query]) return geocodeCache[query];
+  try {
+    const resp = await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`,
+      { headers: { 'User-Agent': 'RugNekNetwerk/1.0' } }
+    );
+    const data = await resp.json();
+    if (data && data.length > 0) {
+      const result = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+      geocodeCache[query] = result;
+      return result;
+    }
+  } catch(e) {}
+  return null;
+}
+
+// ── DATA LADEN ──
+async function laadData() {
+  try {
+    const [tResp, pResp, kResp, tpResp] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/therapeuten?actief=eq.true&select=id,voornaam,achternaam,foto_url,disciplines,code`, { headers: HEADERS }),
+      fetch(`${SUPABASE_URL}/rest/v1/praktijken?actief=eq.true&select=id,naam,straat,huisnummer,postcode,stad,website,contact_email,telefoon,tier,beschrijving,lat,lng`, { headers: HEADERS }),
+      fetch(`${SUPABASE_URL}/rest/v1/therapeut_subcategorieen?select=therapeut_id,subcategorie_id`, { headers: HEADERS }),
+      fetch(`${SUPABASE_URL}/rest/v1/therapeut_praktijken?select=therapeut_id,praktijk_id`, { headers: HEADERS })
+    ]);
+
+    const therapeuten = await tResp.json();
+    const praktijken = await pResp.json();
+    const subcatKoppelingen = await kResp.json();
+    const praktijkKoppelingen = await tpResp.json();
+
+    const rnTherapeutIds = new Set(
+      subcatKoppelingen.filter(k => RN_SUBCAT_IDS.includes(k.subcategorie_id)).map(k => k.therapeut_id)
+    );
+
+    const therapeutenMet = therapeuten
+      .filter(t => rnTherapeutIds.has(t.id))
+      .map(t => {
+        const koppeling = praktijkKoppelingen.find(k => k.therapeut_id === t.id);
+        const praktijk = koppeling ? praktijken.find(p => p.id === koppeling.praktijk_id) : null;
+        const subcats = subcatKoppelingen.filter(k => k.therapeut_id === t.id).map(k => k.subcategorie_id);
+        return { ...t, praktijkData: praktijk, subcats };
+      });
+
+    const praktijkMap = {};
+    therapeutenMet.forEach(t => {
+      if (!t.praktijkData) return;
+      const pid = t.praktijkData.id;
+      if (!praktijkMap[pid]) praktijkMap[pid] = { ...t.praktijkData, therapeuten: [] };
+      praktijkMap[pid].therapeuten.push(t);
+    });
+    allePraktijken = Object.values(praktijkMap);
+
+    kaart = L.map('kaart').setView([51.7, 4.9], 9);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>'
+    }).addTo(kaart);
+
+    renderDomeinKnoppen();
+    renderDomeinen();
+    console.log(`✓ ${allePraktijken.length} praktijken geladen`);
+
+    geocodeAlles();
+  } catch(e) {
+    console.error('Laad fout:', e);
+  }
+}
+
+async function geocodeAlles() {
+  for (const p of allePraktijken) {
+    if (!p.lat || !p.lng) {
+      const coords = await geocodeAdres(p.straat || '', p.stad || '');
+      if (coords) { p.lat = coords.lat; p.lng = coords.lng; }
+    }
+  }
+}
+
+// ── ZOEK INPUT ──
+function handleZoekInput(waarde) {
+  const wisBtn = document.getElementById('zoek-wis');
+  wisBtn.style.display = waarde ? 'inline-block' : 'none';
+
+  if (!waarde.trim()) {
+    document.getElementById('cat-suggesties').innerHTML = '';
+    return;
+  }
+
+  const q = waarde.toLowerCase();
+  let matchend = ALLE_SUBCATS.filter(s =>
+    s.naam.toLowerCase().includes(q) ||
+    s.sub.toLowerCase().includes(q) ||
+    s.termen.some(t => t.toLowerCase().includes(q)) ||
+    q.split(' ').some(w => w.length > 2 && s.termen.some(t => t.includes(w)))
+  );
+
+  // Domein-filter (knoppen boven zoekbalk) toepassen op suggesties
+  if (actiefDomein) matchend = matchend.filter(s => s.domein === actiefDomein);
+
+  const c = document.getElementById('cat-suggesties');
+  if (matchend.length > 0) {
+    c.innerHTML = matchend.slice(0, 5).map(s => {
+      const count = allePraktijken.filter(p => p.therapeuten.some(t => t.subcats.includes(s.id))).length;
+      return `<div class="cat-suggestie" style="--sk:${s.kleur}" onclick="kiesViaSuggestie(${s.id})">
+        <span class="icon">${s.icon}</span>
+        <div>
+          <div class="naam">${s.naam}</div>
+          <div class="sub">${s.sub} · ${count} praktijk${count !== 1 ? 'en' : ''}</div>
+        </div>
+        <span class="domein-tag">${s.domeinNaam}</span>
+      </div>`;
+    }).join('');
+  } else {
+    c.innerHTML = `<div style="padding:10px 14px;font-size:0.85rem;color:var(--text-muted)">Geen gebieden gevonden voor "<strong>${waarde}</strong>"</div>`;
+  }
+}
+
+function wisZoekopdracht() {
+  document.getElementById('zoek-input').value = '';
+  document.getElementById('zoek-wis').style.display = 'none';
+  document.getElementById('cat-suggesties').innerHTML = '';
+}
+
+function voerZoekopdracht() {
+  const waarde = document.getElementById('zoek-input').value.trim();
+  if (!waarde) return;
+  const q = waarde.toLowerCase();
+  let kandidaten = ALLE_SUBCATS.filter(s =>
+    s.naam.toLowerCase().includes(q) || s.termen.some(t => t.toLowerCase().includes(q))
+  );
+  if (actiefDomein) {
+    const binnenDomein = kandidaten.filter(s => s.domein === actiefDomein);
+    if (binnenDomein.length > 0) kandidaten = binnenDomein;
+  }
+  if (kandidaten.length > 0) kiesViaSuggestie(kandidaten[0].id);
+}
+
+function kiesViaSuggestie(subcatId) {
+  const s = ALLE_SUBCATS.find(x => x.id === subcatId);
+  document.getElementById('zoek-input').value = s ? s.naam : '';
+  document.getElementById('cat-suggesties').innerHTML = '';
+  kiesSubcat(subcatId);
+}
+
+// ── FILTEREN: één subcategorie ──
+function kiesSubcat(subcatId) {
+  actieveSubcat = subcatId;
+  const s = ALLE_SUBCATS.find(x => x.id === subcatId);
+
+  document.querySelectorAll('.klacht-chip').forEach(el => el.classList.remove('actief'));
+  document.getElementById(`chip-${subcatId}`)?.classList.add('actief');
+
+  let gefilterd = allePraktijken
+    .filter(p => p.therapeuten.some(t => t.subcats.includes(subcatId)))
+    .map(p => ({ ...p, therapeuten: p.therapeuten.filter(t => t.subcats.includes(subcatId)) }));
+
+  gefilterd = pasLocatieToe(gefilterd);
+  gefilterdePraktijken = gefilterd;
+
+  toonFilterBanner(`${s?.icon || ''} ${s?.naam || ''}`, s?.kleur);
+  renderDiscFilters(gefilterd);
+  renderResultaten(gefilterd);
+  document.getElementById('resultaten').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── FILTEREN: heel domein ──
+function kiesDomein(domeinKey) {
+  actieveSubcat = null;
+  const d = DOMEINEN[domeinKey];
+  const ids = d.subcats.map(s => s.id);
+
+  document.querySelectorAll('.klacht-chip').forEach(el => el.classList.remove('actief'));
+
+  let gefilterd = allePraktijken
+    .filter(p => p.therapeuten.some(t => t.subcats.some(sc => ids.includes(sc))))
+    .map(p => ({ ...p, therapeuten: p.therapeuten.filter(t => t.subcats.some(sc => ids.includes(sc))) }));
+
+  gefilterd = pasLocatieToe(gefilterd);
+  gefilterdePraktijken = gefilterd;
+
+  toonFilterBanner(`${d.icoon} ${d.naam} (alle klachten)`, d.kleur);
+  renderDiscFilters(gefilterd);
+  renderResultaten(gefilterd);
+  document.getElementById('resultaten').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function pasLocatieToe(lijst) {
+  const locatie = (document.getElementById('zoek-locatie')?.value || '').trim().toLowerCase();
+  if (!locatie) return lijst;
+  const lok = locatie.replace(/\s/g, '');
+  return lijst.filter(p => {
+    const stad = (p.stad || '').toLowerCase();
+    const postcode = (p.postcode || '').toLowerCase().replace(/\s/g, '');
+    return stad.includes(locatie) || postcode.includes(lok);
+  });
+}
+
+function toonFilterBanner(tekst, kleur) {
+  const filterEl = document.getElementById('actief-filter');
+  const filterTag = document.getElementById('actief-filter-tag');
+  filterEl.style.display = 'flex';
+  filterEl.style.setProperty('--ftk', kleur || 'var(--teal)');
+  filterTag.style.background = kleur || 'var(--teal)';
+  filterTag.textContent = tekst;
+}
+
+function renderDiscFilters(praktijken) {
+  const discSet = new Set(praktijken.flatMap(p => p.therapeuten.flatMap(t => t.disciplines || [])));
+  const rij = document.getElementById('disc-filter-rij');
+  if (discSet.size <= 1) { rij.innerHTML = ''; return; }
+  const discs = ['Alle', ...Array.from(discSet).sort()];
+  rij.innerHTML = discs.map(d =>
+    `<button class="disc-filter-btn ${d === 'Alle' ? 'actief' : ''}" onclick="filterDisc('${d}')">${d}</button>`
+  ).join('');
+}
+
+function filterDisc(disc) {
+  document.querySelectorAll('.disc-filter-btn').forEach(b => b.classList.toggle('actief', b.textContent.trim() === disc));
+  let lijst = [...gefilterdePraktijken];
+  if (disc !== 'Alle') {
+    lijst = lijst.map(p => ({ ...p, therapeuten: p.therapeuten.filter(t => (t.disciplines || []).includes(disc)) }))
+                 .filter(p => p.therapeuten.length > 0);
+  }
+  renderResultaten(lijst);
+}
+
+function wisFilter() {
+  actieveSubcat = null;
+  document.getElementById('actief-filter').style.display = 'none';
+  document.getElementById('disc-filter-rij').innerHTML = '';
+  document.querySelectorAll('.klacht-chip').forEach(el => el.classList.remove('actief'));
+  document.getElementById('zoek-input').value = '';
+  document.getElementById('praktijk-lijst').innerHTML = '<div class="geen-resultaten"><div class="geen-icon">🦴</div><div>Kies een gebied of zoek op klacht.</div></div>';
+  document.getElementById('resultaten-aantal').textContent = '';
+  document.getElementById('kaart-header').textContent = '🗺️ Kaart';
+  markers.forEach(m => kaart.removeLayer(m));
+  markers = [];
+  kaart.setView([51.7, 4.9], 9);
+}
+
+// ── RENDER RESULTATEN ──
+function renderResultaten(lijst) {
+  const el = document.getElementById('praktijk-lijst');
+  const header = document.getElementById('kaart-header');
+  const tagTekst = document.getElementById('actief-filter-tag').textContent;
+  header.textContent = tagTekst ? `🗺️ ${tagTekst}` : '🗺️ Kaart';
+
+  document.getElementById('resultaten-aantal').textContent =
+    lijst.length > 0 ? `${lijst.length} praktijk${lijst.length !== 1 ? 'en' : ''} gevonden` : '';
+
+  markers.forEach(m => kaart.removeLayer(m));
+  markers = [];
+
+  if (lijst.length === 0) {
+    el.innerHTML = '<div class="geen-resultaten"><div class="geen-icon">🦴</div><div>Geen specialisten gevonden.</div></div>';
+    return;
+  }
+
+  el.innerHTML = lijst.map((p, idx) => {
+    const alleDiscs = [...new Set(p.therapeuten.flatMap(t => t.disciplines || []))];
+    const discPills = alleDiscs.map(d =>
+      `<span style="display:inline-block;font-size:0.72rem;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--teal-light);color:var(--teal-dark);margin-right:4px">${d}</span>`
+    ).join('');
+    const bio = p.beschrijving || '';
+    const bioKort = bio.length > 100 ? bio.substring(0, 100) + '...' : bio;
+    const tierBadge = p.tier === 'partner'
+      ? `<span style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:999px;background:#FEF9E7;color:#C9940A;border:1px solid #F5D06B;margin-bottom:10px">⭐ Partner</span>`
+      : p.tier === 'plus'
+        ? `<span style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:999px;background:#EAF0FB;color:#1A5276;border:1px solid #AEC6E8;margin-bottom:10px">✦ Plus</span>`
+        : '';
+    return `<div class="praktijk-kaart" id="pk-${idx}" onclick="focusPraktijk(${p.lat||0},${p.lng||0},${idx})">
+      ${tierBadge}
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+        <div class="praktijk-naam">${p.naam}</div>
+        <div style="background:var(--teal);color:white;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0">${idx+1}</div>
+      </div>
+      ${discPills ? `<div style="margin-bottom:10px">${discPills}</div>` : ''}
+      <div class="praktijk-adres" style="margin-bottom:6px">📍 ${[p.straat, p.postcode, p.stad].filter(Boolean).join(', ')}</div>
+      ${p.contact_email ? `<div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:4px">✉️ <a href="mailto:${p.contact_email}" onclick="event.stopPropagation()" style="color:var(--text-muted);text-decoration:none">${p.contact_email}</a></div>` : ''}
+      ${p.telefoon ? `<div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:4px">📞 <a href="tel:${p.telefoon}" onclick="event.stopPropagation()" style="color:var(--text-muted);text-decoration:none">${p.telefoon}</a></div>` : ''}
+      ${p.website ? `<div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px">🌐 <a href="${p.website}" target="_blank" onclick="event.stopPropagation()" style="color:var(--text-muted);text-decoration:none">Website</a></div>` : ''}
+      ${bioKort ? `<div style="font-size:0.82rem;color:var(--text-muted);line-height:1.55;margin-bottom:12px">${bioKort}</div>` : ''}
+      <button onclick="event.stopPropagation(); window.location.href='therapeuten.html?praktijk=${p.id}'"
+        style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--blauw);color:white;border:none;border-radius:8px;padding:11px 16px;font-family:'Inter',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;transition:opacity 0.2s;margin-top:4px"
+        onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+        👥 Bekijk therapeuten
+      </button>
+    </div>`;
+  }).join('');
+
+  const bounds = [];
+  lijst.forEach((p, idx) => {
+    if (!p.lat || !p.lng) return;
+    const icon = L.divIcon({
+      className: '',
+      html: `<div style="background:#1BA098;color:white;width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center">
+        <span style="transform:rotate(45deg);font-size:12px;font-weight:700">${idx+1}</span>
+      </div>`,
+      iconSize:[30,30], iconAnchor:[15,30], popupAnchor:[0,-32]
+    });
+    const discs = [...new Set(p.therapeuten.flatMap(t => t.disciplines||[]))].join(', ');
+    const marker = L.marker([p.lat, p.lng], { icon })
+      .addTo(kaart)
+      .bindPopup(`<div style="font-family:Inter,sans-serif;min-width:160px">
+        <div style="font-weight:700;color:#22384A;margin-bottom:4px">${p.naam}</div>
+        <div style="font-size:0.82rem;color:#75828E;margin-bottom:4px">📍 ${[p.straat,p.stad].filter(Boolean).join(', ')}</div>
+        ${discs ? `<div style="font-size:0.78rem;color:#1BA098;font-weight:600">${discs}</div>` : ''}
+        <div style="font-size:0.78rem;color:#75828E;margin-top:4px">${p.therapeuten.length} therapeut${p.therapeuten.length!==1?'en':''}</div>
+      </div>`);
+    marker.on('click', () => {
+      document.querySelectorAll('.praktijk-kaart').forEach(k => k.classList.remove('actief'));
+      document.getElementById(`pk-${idx}`)?.classList.add('actief');
+      document.getElementById(`pk-${idx}`)?.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    });
+    markers.push(marker);
+    bounds.push([p.lat, p.lng]);
+  });
+  if (bounds.length > 0) kaart.fitBounds(bounds, { padding:[40,40], maxZoom:13 });
+}
+
+function focusPraktijk(lat, lng, idx) {
+  document.querySelectorAll('.praktijk-kaart').forEach(k => k.classList.remove('actief'));
+  document.getElementById(`pk-${idx}`)?.classList.add('actief');
+  if (!lat || !lng) return;
+  kaart.setView([lat, lng], 14);
+  if (markers[idx]) markers[idx].openPopup();
+}
+
+laadData();
+</script>
+</body>
+</html>
