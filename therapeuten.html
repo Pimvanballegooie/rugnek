@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Therapeuten – Rug Nek Netwerk</title>
+  <meta name="description" content="Bekijk de therapeuten van deze praktijk op Rug Nek Netwerk." />
+  <style>
+    @font-face { font-family: 'Inter'; src: url('fonts/inter-v20-latin-regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'Inter'; src: url('fonts/inter-v20-latin-600.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+    @font-face { font-family: 'Inter'; src: url('fonts/inter-v20-latin-700.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --oranje: #1BA098; --teal-light: #E6F5F4; --oranje-dark: #14807A;
+      --groen: #4CAF50; --groen-light: #EDF7EE;
+      --navy: #22384A; --navy-dark: #16242F;
+      --grey-bg: #F8F9FA; --grey-border: #E8ECF0;
+      --text: #2C3E50; --text-muted: #7F8C8D; --white: #FFFFFF;
+      --gold: #C9940A;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; font-size: 16px; color: var(--text); background: var(--grey-bg); min-height: 100vh; }
+
+    header { background: var(--white); border-bottom: 1px solid var(--grey-border); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .header-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .logo img { height: 48px; width: 48px; object-fit: contain; }
+    .logo-text { font-weight: 700; font-size: 1rem; color: var(--navy); }
+    .logo-text span { color: var(--teal); }
+
+    /* KO HERO — oranje/groen gradient */
+    .praktijk-hero { background: linear-gradient(160deg, #1BA098 0%, #6ABF4B 45%, #2E7DD1 100%); position: relative; color: white; padding: 40px 24px 36px; }
+    .praktijk-hero::before { content:''; position:absolute; inset:0; background:rgba(0,0,0,0.25); }
+    .praktijk-hero-inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+    .terug-link { display: inline-flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.75); font-size: 0.85rem; text-decoration: none; margin-bottom: 16px; transition: color 0.2s; }
+    .terug-link:hover { color: white; }
+    .praktijk-hero h1 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; margin-bottom: 10px; text-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .praktijk-meta { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 10px; }
+    .praktijk-meta-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: rgba(255,255,255,0.85); }
+    .praktijk-meta-item a { color: rgba(255,255,255,0.85); text-decoration: none; }
+    .praktijk-meta-item a:hover { color: white; text-decoration: underline; }
+    .tier-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 0.72rem; font-weight: 700; padding: 4px 12px; border-radius: 999px; margin-bottom: 14px; }
+    .tier-partner { background: rgba(255,255,255,0.2); color: #FFE082; border: 1px solid rgba(255,224,130,0.5); }
+    .tier-plus { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.3); }
+
+    /* THERAPEUTEN GRID */
+    .content { max-width: 1100px; margin: 0 auto; padding: 40px 24px 64px; }
+    .therapeuten-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .therapeut-kaart { background: var(--white); border: 1px solid var(--grey-border); border-radius: 16px; padding: 28px 24px; text-align: center; transition: all 0.2s; position: relative; }
+    .therapeut-kaart:hover { box-shadow: 0 6px 24px rgba(232,115,90,0.12); transform: translateY(-2px); border-color: var(--teal); }
+    .therapeut-kaart.specialist { border-color: var(--teal); box-shadow: 0 0 0 2px rgba(76,175,80,0.15); }
+    .therapeut-kaart.specialist:hover { border-color: var(--teal); box-shadow: 0 6px 24px rgba(76,175,80,0.15); }
+    .specialist-badge { position: absolute; top: -1px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg, #1BA098, #2E7DD1); color: white; font-size: 0.68rem; font-weight: 700; padding: 4px 14px; border-radius: 0 0 8px 8px; white-space: nowrap; letter-spacing: 0.04em; }
+    .therapeut-foto-wrap { margin: 0 auto 16px; }
+    .therapeut-foto { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--grey-border); }
+    .therapeut-avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--oranje-light); display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto; border: 3px solid var(--grey-border); }
+    .therapeut-naam { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+    .disc-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 12px; }
+    .disc-pill { font-size: 0.72rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--oranje-light); color: var(--teal); }
+    .therapeut-bio { font-size: 0.83rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+    .subcat-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 8px; }
+    .subcat-tag { font-size: 0.72rem; background: var(--grey-bg); color: var(--text-muted); padding: 3px 10px; border-radius: 999px; border: 1px solid var(--grey-border); }
+    .subcat-tag.ko { background: var(--groen-light); color: #2e7d32; border-color: rgba(76,175,80,0.3); }
+
+    .laden { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .laden-icon { font-size: 2.5rem; margin-bottom: 12px; }
+
+    footer { background: var(--navy-dark); color: rgba(255,255,255,0.4); text-align: center; padding: 24px; font-size: 0.78rem; }
+    footer a { color: rgba(255,255,255,0.6); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <img src="rugnek_logo.png" style="border-radius:10px" alt="Rug Nek Netwerk" />
+      <div class="logo-text"><span>Kansrijk</span> Opgroeien</div>
+    </a>
+    <a href="index.html#zoeken" style="font-size:0.85rem;color:var(--teal);font-weight:600;text-decoration:none">← Terug naar zoeken</a>
+  </div>
+</header>
+
+<div id="praktijk-hero-wrap"></div>
+
+<div class="content">
+  <div id="therapeuten-container">
+    <div class="laden"><div class="laden-icon">🌱</div><div>Therapeuten laden...</div></div>
+  </div>
+</div>
+
+<footer><p>© 2025 Rug Nek Netwerk &nbsp;·&nbsp; <a href="index.html">Home</a> &nbsp;·&nbsp; <a href="https://vindjefysio.net">VindJeFysio Netwerk</a></p></footer>
+
+<script>
+const SUPABASE_URL = 'https://islujznszevdynguhjdc.supabase.co';
+const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlzbHVqem5zemV2ZHluZ3VoamRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NDYzMDAsImV4cCI6MjA5NzIyMjMwMH0.wh3RXZRKfpfArr3YBYu8ktE7xv1inwDD72Vq3LJl3QQ';
+const HEADERS = { 'apikey': ANON_KEY, 'Authorization': `Bearer ${ANON_KEY}` };
+
+const KO_SUBCAT_IDS = new Set([1,2,3,4,5,6,7,8,9,10]);
+// Subcategorie namen worden dynamisch geladen uit Supabase
+let SUBCAT_NAMEN = {};
+
+async function laadPagina() {
+  const params = new URLSearchParams(window.location.search);
+  const praktijkId = params.get('praktijk');
+  if (!praktijkId) { window.location.href = 'index.html'; return; }
+
+  try {
+    const [pResp, kopResp, scResp, subcatNamenResp] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/praktijken?id=eq.${praktijkId}&select=*`, { headers: HEADERS }),
+      fetch(`${SUPABASE_URL}/rest/v1/therapeut_praktijken?praktijk_id=eq.${praktijkId}&select=therapeut_id`, { headers: HEADERS }),
+      fetch(`${SUPABASE_URL}/rest/v1/therapeut_subcategorieen?select=therapeut_id,subcategorie_id`, { headers: HEADERS }),
+      fetch(`${SUPABASE_URL}/rest/v1/subcategorieen?select=id,naam&order=id`, { headers: HEADERS })
+    ]);
+
+    const [praktijk] = await pResp.json();
+    const koppelingen = await kopResp.json();
+    const alleSubcats = await scResp.json();
+    const subcatNamenData = await subcatNamenResp.json();
+
+    // Bouw dynamische naam-map op uit database
+    if (Array.isArray(subcatNamenData)) {
+      subcatNamenData.forEach(s => { SUBCAT_NAMEN[s.id] = s.naam; });
+    }
+
+    if (!praktijk) { document.getElementById('therapeuten-container').innerHTML = '<div class="laden"><div class="laden-icon">❌</div><div>Praktijk niet gevonden.</div></div>'; return; }
+
+    // Render hero
+    renderHero(praktijk);
+    document.title = `${praktijk.naam} – Rug Nek Netwerk`;
+
+    if (!koppelingen || koppelingen.length === 0) {
+      document.getElementById('therapeuten-container').innerHTML = '<div class="laden"><div class="laden-icon">👤</div><div>Nog geen therapeuten aangemeld bij deze praktijk.</div></div>';
+      return;
+    }
+
+    // Haal therapeuten op
+    const ids = koppelingen.map(k => k.therapeut_id);
+    const filter = ids.map(id => `id.eq.${id}`).join(',');
+    const tResp = await fetch(
+      `${SUPABASE_URL}/rest/v1/therapeuten?or=(${filter})&actief=eq.true&select=id,voornaam,achternaam,foto_url,disciplines,bio,code`,
+      { headers: HEADERS }
+    );
+    const therapeuten = await tResp.json();
+
+    // Controleer welke een goud-badge hebben (alle KO cursussen behaald)
+    // Simpel: check cursus_voortgang voor schrijfproblemen-dysgrafie-v1
+    let goldBadges = new Set();
+    try {
+      const codes = therapeuten.map(t => `therapeut_code.eq.${encodeURIComponent(t.code||t.id)}`).join(',');
+      const gResp = await fetch(
+        `${SUPABASE_URL}/rest/v1/cursus_voortgang?or=(${codes})&cursus_id=eq.schrijfproblemen-dysgrafie-v1&geslaagd=eq.true&select=therapeut_code`,
+        { headers: HEADERS }
+      );
+      const gData = await gResp.json();
+      gData.forEach(g => goldBadges.add(g.therapeut_code));
+    } catch(e) {}
+
+    renderTherapeutenGrid(therapeuten, alleSubcats, goldBadges);
+
+  } catch(e) {
+    console.error(e);
+    document.getElementById('therapeuten-container').innerHTML = '<div class="laden"><div class="laden-icon">⚠️</div><div>Er ging iets mis bij het laden.</div></div>';
+  }
+}
+
+function renderHero(p) {
+  const tierBadge = p.tier === 'partner'
+    ? `<span class="tier-badge tier-partner">⭐ Partner</span>`
+    : p.tier === 'plus' ? `<span class="tier-badge tier-plus">✦ Plus</span>` : '';
+
+  document.getElementById('praktijk-hero-wrap').innerHTML = `
+    <div class="praktijk-hero">
+      <div class="praktijk-hero-inner">
+        <a href="index.html#resultaten" class="terug-link">← Terug naar locaties</a>
+        ${tierBadge}
+        <h1>${p.naam}</h1>
+        <div class="praktijk-meta">
+          ${p.straat ? `<div class="praktijk-meta-item">📍 ${p.straat}${p.huisnummer?' '+p.huisnummer:''}, ${p.stad||''}</div>` : ''}
+          ${p.email ? `<div class="praktijk-meta-item">✉️ <a href="mailto:${p.email}">${p.email}</a></div>` : ''}
+          ${p.telefoon ? `<div class="praktijk-meta-item">📞 <a href="tel:${p.telefoon}">${p.telefoon}</a></div>` : ''}
+          ${p.website ? `<div class="praktijk-meta-item">🌐 <a href="${p.website}" target="_blank">Website</a></div>` : ''}
+        </div>
+        ${p.beschrijving ? `<div style="margin-top:14px;font-size:0.88rem;color:rgba(255,255,255,0.75);max-width:600px;line-height:1.6">${p.beschrijving}</div>` : ''}
+      </div>
+    </div>`;
+}
+
+function renderTherapeutenGrid(therapeuten, alleSubcats, goldBadges) {
+  const container = document.getElementById('therapeuten-container');
+  if (therapeuten.length === 0) {
+    container.innerHTML = '<div class="laden"><div class="laden-icon">👤</div><div>Geen actieve therapeuten gevonden.</div></div>';
+    return;
+  }
+
+  container.innerHTML = `<div class="therapeuten-grid">${therapeuten.map(t => {
+    const naam = `${t.voornaam} ${t.achternaam}`;
+    const isSpecialist = goldBadges.has(t.code || String(t.id));
+    const subcats = alleSubcats.filter(k => k.therapeut_id === t.id).map(k => k.subcategorie_id);
+    const koSubcats = subcats.filter(id => KO_SUBCAT_IDS.has(id));
+    const andereSubcats = subcats.filter(id => !KO_SUBCAT_IDS.has(id));
+
+    const fotoHtml = t.foto_url
+      ? `<img class="therapeut-foto" src="${t.foto_url}" alt="${naam}" onerror="this.outerHTML='<div class=therapeut-avatar>👤</div>'" />`
+      : `<div class="therapeut-avatar">👤</div>`;
+
+    const discPills = (t.disciplines || []).map(d =>
+      `<span class="disc-pill">${d}</span>`
+    ).join('');
+
+    const koTags = koSubcats.map(id =>
+      `<span class="subcat-tag ko">✓ ${SUBCAT_NAMEN[id] || id}</span>`
+    ).join('');
+
+    const andereTags = andereSubcats.slice(0, 4).map(id =>
+      `<span class="subcat-tag">${SUBCAT_NAMEN[id] || id}</span>`
+    ).join('');
+
+    return `<div class="therapeut-kaart${isSpecialist ? ' specialist' : ''}">
+      ${isSpecialist ? '<div class="specialist-badge">🧠 MG Specialist</div>' : ''}
+      <div class="therapeut-foto-wrap">${fotoHtml}</div>
+      <div class="therapeut-naam">${naam}</div>
+      ${discPills ? `<div class="disc-pills">${discPills}</div>` : ''}
+      ${t.bio ? `<div class="therapeut-bio">${t.bio}</div>` : ''}
+      ${koTags || andereTags ? `<div class="subcat-tags">${koTags}${andereTags}</div>` : ''}
+    </div>`;
+  }).join('')}</div>`;
+}
+
+laadPagina();
+</script>
+</body>
+</html>
