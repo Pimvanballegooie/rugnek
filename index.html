@@ -239,9 +239,9 @@
 <!-- DE DRIE DOMEINEN -->
 <section class="domeinen-sectie" id="domeinen">
   <div class="sectie-inner">
-    <div class="sectie-eyebrow">Drie gebieden, één netwerk</div>
+    <div class="sectie-eyebrow">Vier gebieden, één netwerk</div>
     <div class="sectie-titel">Waar zit uw klacht?</div>
-    <div class="sectie-sub">De wervelkolom bestaat uit drie gebieden. Kies uw gebied en zie direct de klachten waar onze specialisten bij helpen — inclusief voorbereiding op en revalidatie na een operatie.</div>
+    <div class="sectie-sub">Kies het gebied waar uw klacht zit: nek, borst & ribben, lage rug of bekken. Daarnaast zijn er thema's — zoals revalidatie na een operatie of sport & overbelasting — die met elk gebied te combineren zijn.</div>
     <div class="domeinen-grid" id="domeinen-grid">
       <!-- Wordt gevuld via JS op basis van DOMEINEN config -->
     </div>
@@ -316,51 +316,67 @@ const HEADERS = { 'apikey': ANON_KEY, 'Authorization': `Bearer ${ANON_KEY}` };
 // ═══════════════════════════════════════════════════════════════
 // DOMEINEN-CONFIG — HET HART VAN DEZE SITE
 //
-// ⚠️ SUBCATEGORIE-IDs INVULLEN NA AANMAKEN IN SUPABASE ⚠️
-// De id-waarden hieronder (901 t/m 912) zijn PLACEHOLDERS.
-// Maak eerst de 12 subcategorieën aan in de subcategorieen-tabel
-// (categorie 6, of nieuwe categorie) en vervang dan elke id door
-// het echte Supabase-id. Zelfde ids straks ook in
-// therapeut-aanmelden.html en sync_protocollen.py gebruiken.
+// Vier DOMEINEN (elk gekoppeld aan één Supabase-subcategorie) plus
+// vier domein-overstijgende THEMA'S die met elk domein combineren.
+// IDs komen uit de bestaande subcategorieen-tabel (categorie 6).
+//
+// ⚠️ ÉÉN PLACEHOLDER: id 999 = 'Borst- en ribklachten'. Deze
+// subcategorie bestaat nog niet in Supabase — aanmaken en 999
+// vervangen door het echte id (ook in therapeut-aanmelden.html).
 // ═══════════════════════════════════════════════════════════════
 const DOMEINEN = {
-  cervicaal: {
-    naam: 'Nek & hoofd',
+  nek: {
+    naam: 'Nek (en hoofd)',
     anatomie: 'Cervicale wervelkolom',
     kleur: '#1BA098', kleurLicht: '#E6F5F4',
     icoon: '💆',
     subcats: [
-      { id: 901, icon: '😖', naam: 'Nekpijn & whiplash', sub: 'Stijve nek, whiplash, spierspanning', termen: ['nekpijn','nek','whiplash','stijve nek','nekklachten','spierspanning nek'] },
-      { id: 902, icon: '🤕', naam: 'Hoofdpijn & duizeligheid', sub: 'Spanningshoofdpijn, cervicogene hoofdpijn, duizelig', termen: ['hoofdpijn','duizeligheid','duizelig','migraine','spanningshoofdpijn','cervicogeen','draaierig'] },
-      { id: 903, icon: '⚡', naam: 'Nekhernia & uitstraling', sub: 'Uitstraling naar arm, tintelingen, kracht', termen: ['nekhernia','hernia nek','uitstraling arm','tintelingen','tintelende vingers','zenuwpijn arm'] },
-      { id: 904, icon: '🏥', naam: 'Operatie: voorbereiding & revalidatie', sub: 'Voor en na een nekoperatie', termen: ['nekoperatie','operatie nek','revalidatie nek','herstel nekoperatie','voorbereiding operatie'], operatie: true },
+      { id: 37, icon: '😖', naam: 'Nekklachten', sub: 'Nekpijn, hoofdpijn, stijfheid, uitstraling', termen: ['nekpijn','nek','nekklachten','whiplash','stijve nek','hoofdpijn','duizeligheid','nekhernia','uitstraling arm','tintelingen arm','migraine'] },
     ]
   },
-  thoracaal: {
-    naam: 'Borstwervelkolom & ribben',
+  borstribben: {
+    naam: 'Borst en ribben',
     anatomie: 'Thoracale wervelkolom',
     kleur: '#6ABF4B', kleurLicht: '#F0F9EB',
     icoon: '🫁',
     subcats: [
-      { id: 905, icon: '😣', naam: 'Midden-rugpijn', sub: 'Pijn tussen de schouderbladen, blokkade', termen: ['midden rugpijn','tussen schouderbladen','borstwervel','thoracaal','blokkade rug','pijn borstkas'] },
-      { id: 906, icon: '🫸', naam: 'Ribklachten & ademhaling', sub: 'Ribblokkade, pijn bij ademen, na ribbreuk', termen: ['rib','ribklachten','ribblokkade','pijn bij ademen','ribbreuk','ademhaling pijn','intercostaal'] },
-      { id: 907, icon: '🧍', naam: 'Houding, kyfose & scoliose', sub: 'Kromme rug, houdingsklachten, scoliose', termen: ['houding','kyfose','scoliose','kromme rug','bochel','houdingsklachten','ronde rug'] },
-      { id: 908, icon: '🏥', naam: 'Operatie: voorbereiding & revalidatie', sub: 'Voor en na een operatie aan de borstwervelkolom', termen: ['operatie borstwervel','scoliose operatie','revalidatie thoracaal','herstel operatie rug'], operatie: true },
+      { id: 999, icon: '🫸', naam: 'Borst- en ribklachten', sub: 'Midden-rugpijn, ribblokkade, pijn bij ademen', termen: ['midden rugpijn','tussen schouderbladen','borstwervel','thoracaal','rib','ribklachten','ribblokkade','pijn bij ademen','ribbreuk','borstkas'] },
     ]
   },
-  lumbosacraal: {
-    naam: 'Lage rug & SI-gewricht',
-    anatomie: 'Lumbo-sacrale wervelkolom',
+  lagerug: {
+    naam: 'Lage rugklachten',
+    anatomie: 'Lumbale wervelkolom',
     kleur: '#2E7DD1', kleurLicht: '#EAF2FB',
-    icoon: '🔻',
+    icoon: '😫',
     subcats: [
-      { id: 909, icon: '😫', naam: 'Lage rugpijn', sub: 'Acute of chronische lage rugklachten, spit', termen: ['lage rugpijn','rugpijn','spit','lumbago','lage rug','chronische rugpijn','acute rugpijn'] },
-      { id: 910, icon: '⚡', naam: 'Hernia & ischias', sub: 'Uitstraling naar been, zenuwpijn, tintelingen', termen: ['hernia','ischias','uitstraling been','zenuwpijn been','tintelingen been','hnp','beenpijn vanuit rug'] },
-      { id: 911, icon: '🔗', naam: 'SI-gewricht & bekken', sub: 'SI-klachten, bekkeninstabiliteit, bekkenpijn', termen: ['si gewricht','si-gewricht','sacro','bekken','bekkeninstabiliteit','bekkenpijn','si klachten'] },
-      { id: 912, icon: '🏥', naam: 'Operatie: voorbereiding & revalidatie', sub: 'Voor en na een lage-rugoperatie', termen: ['rugoperatie','hernia operatie','revalidatie rug','herstel rugoperatie','spondylodese','voorbereiding rugoperatie'], operatie: true },
+      { id: 36, icon: '😫', naam: 'Lage rugklachten', sub: 'Spit, hernia, uitstraling, chronische rugpijn', termen: ['lage rugpijn','rugpijn','spit','lumbago','hernia','ischias','uitstraling been','zenuwpijn been','chronische rugpijn','hnp'] },
+    ]
+  },
+  bekken: {
+    naam: 'Bekkenklachten (en SI)',
+    anatomie: 'Sacrum & SI-gewrichten',
+    kleur: '#8E44AD', kleurLicht: '#F4EAF9',
+    icoon: '🔗',
+    subcats: [
+      { id: 38, icon: '🔗', naam: 'Bekkenklachten', sub: 'Bekkenpijn, SI-klachten, zwangerschap', termen: ['bekken','bekkenpijn','si gewricht','si-gewricht','si klachten','sacro','bekkeninstabiliteit','zwangerschap bekken'] },
+    ]
+  },
+  themas: {
+    naam: "Thema's",
+    anatomie: 'Combineerbaar met elk gebied',
+    kleur: '#F5A623', kleurLicht: '#FEF6E7',
+    icoon: '🏥',
+    knopTekst: "Alle specialisten binnen de thema's →",
+    subcats: [
+      { id: 39, icon: '🧍', naam: 'Houding en scoliose', sub: 'Houdingsklachten, scoliose, kyfose', termen: ['houding','scoliose','kyfose','kromme rug','houdingsklachten','ronde rug','bochel'] },
+      { id: 42, icon: '📋', naam: 'Voorbereiding op operatie', sub: 'Prehabilitatie voor rug- of nekoperatie', termen: ['voorbereiding operatie','prehabilitatie','operatie rug','operatie nek','pre-operatief'], operatie: true },
+      { id: 40, icon: '🏥', naam: 'Revalidatie na operatie', sub: 'Herstel na rug- of nekoperatie', termen: ['revalidatie','na operatie','herstel operatie','rugoperatie','nekoperatie','spondylodese','post-operatief'], operatie: true },
+      { id: 41, icon: '⚽', naam: 'Sport, bewegen en overbelasting', sub: 'Rug- en nekklachten door sport of werk', termen: ['sport','overbelasting','rugpijn sporten','nekklachten werk','bewegen','sportblessure rug'] },
     ]
   }
 };
+const DOMEIN_KEYS = ['nek', 'borstribben', 'lagerug', 'bekken'];   // de 4 échte domeinen
+const LRN_SUBCAT_IDS = [36, 38];   // Lage Rugnetwerk-eis: lage rug + bekken/SI
 
 // Afgeleiden
 const ALLE_SUBCATS = Object.entries(DOMEINEN).flatMap(([dKey, d]) =>
@@ -405,7 +421,7 @@ function renderDomeinen() {
           <div class="chip-sub">${s.sub}</div>
         </div>
       </div>`).join('');
-    const lrnNoot = key === 'lumbosacraal'
+    const lrnNoot = (key === 'lagerug' || key === 'bekken')
       ? `<div class="lrn-noot">ℹ️ Therapeuten in dit domein zijn aangesloten bij het <strong>Lage Rugnetwerk</strong> (regio Breda) en werken volgens de netwerkprotocollen.</div>`
       : '';
     return `
@@ -414,7 +430,7 @@ function renderDomeinen() {
         <div class="domein-naam">${d.naam}</div>
         <div class="domein-anatomie">${d.anatomie}</div>
         <div class="domein-klachten">${chips}</div>
-        <button class="domein-alles-btn" onclick="kiesDomein('${key}')">Alle specialisten ${d.naam.toLowerCase()} →</button>
+        <button class="domein-alles-btn" onclick="kiesDomein('${key}')">${d.knopTekst || `Alle specialisten ${d.naam.toLowerCase()} →`}</button>
         ${lrnNoot}
       </div>`;
   }).join('');
@@ -566,7 +582,7 @@ function kiesViaSuggestie(subcatId) {
   kiesSubcat(subcatId);
 }
 
-// ── FILTEREN: één subcategorie ──
+// ── FILTEREN: één subcategorie (evt. gecombineerd met actief domein) ──
 function kiesSubcat(subcatId) {
   actieveSubcat = subcatId;
   const s = ALLE_SUBCATS.find(x => x.id === subcatId);
@@ -574,14 +590,28 @@ function kiesSubcat(subcatId) {
   document.querySelectorAll('.klacht-chip').forEach(el => el.classList.remove('actief'));
   document.getElementById(`chip-${subcatId}`)?.classList.add('actief');
 
+  // Thema + actief domein = combineren: therapeut moet béide hebben.
+  // Bijv. domein-knop "Lage rugklachten" aan + thema "Revalidatie na
+  // operatie" → alleen therapeuten met lage rug ÉN revalidatie.
+  let combiDomein = null;
+  if (s?.domein === 'themas' && actiefDomein && DOMEIN_KEYS.includes(actiefDomein)) {
+    combiDomein = DOMEINEN[actiefDomein];
+  }
+  const domeinIds = combiDomein ? combiDomein.subcats.map(x => x.id) : null;
+  const matcht = t => t.subcats.includes(subcatId) &&
+    (!domeinIds || t.subcats.some(sc => domeinIds.includes(sc)));
+
   let gefilterd = allePraktijken
-    .filter(p => p.therapeuten.some(t => t.subcats.includes(subcatId)))
-    .map(p => ({ ...p, therapeuten: p.therapeuten.filter(t => t.subcats.includes(subcatId)) }));
+    .filter(p => p.therapeuten.some(matcht))
+    .map(p => ({ ...p, therapeuten: p.therapeuten.filter(matcht) }));
 
   gefilterd = pasLocatieToe(gefilterd);
   gefilterdePraktijken = gefilterd;
 
-  toonFilterBanner(`${s?.icon || ''} ${s?.naam || ''}`, s?.kleur);
+  const bannerTekst = combiDomein
+    ? `${s?.icon || ''} ${s?.naam || ''} · ${combiDomein.naam}`
+    : `${s?.icon || ''} ${s?.naam || ''}`;
+  toonFilterBanner(bannerTekst, combiDomein ? combiDomein.kleur : s?.kleur);
   renderDiscFilters(gefilterd);
   renderResultaten(gefilterd);
   document.getElementById('resultaten').scrollIntoView({ behavior: 'smooth', block: 'start' });
