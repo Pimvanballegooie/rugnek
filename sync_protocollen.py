@@ -50,24 +50,27 @@ KLEUR_TEAL_D  = "#14807A"
 KLEUR_NAVY    = "#22384A"
 KLEUR_NAVY_D  = "#16242F"
 
-# De drie domeinen + netwerkbrede zone (zelfde indeling als index.html)
+# Vier gebieden + thema-zone (zelfde indeling en kleuren als index.html)
 ZONES = {
-    "cervicaal":    "Nek & hoofd",
-    "thoracaal":    "Borstwervelkolom & ribben",
-    "lumbosacraal": "Lage rug & SI-gewricht",
-    "algemeen":     "Voor elk gebied",
+    "nek":         "Nek (en hoofd)",
+    "borstribben": "Borst en ribben",
+    "lagerug":     "Lage rugklachten",
+    "bekken":      "Bekkenklachten (en SI)",
+    "algemeen":    "Thema's — voor elk gebied",
 }
 ZONE_ICONS = {
-    "cervicaal": "💆",
-    "thoracaal": "🫁",
-    "lumbosacraal": "🔻",
+    "nek": "💆",
+    "borstribben": "🫁",
+    "lagerug": "🔻",
+    "bekken": "🔗",
     "algemeen": "🏥",
 }
 ZONE_KLEUREN = {
-    "cervicaal":    "#1BA098",
-    "thoracaal":    "#6ABF4B",
-    "lumbosacraal": "#2E7DD1",
-    "algemeen":     "#F5A623",
+    "nek":         "#1BA098",
+    "borstribben": "#6ABF4B",
+    "lagerug":     "#2E7DD1",
+    "bekken":      "#8E44AD",
+    "algemeen":    "#F5A623",
 }
 
 CONFIG_BESTAND = "protocollen-config.json"
