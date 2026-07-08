@@ -269,43 +269,53 @@ const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 const HEADERS = { 'apikey': ANON_KEY, 'Authorization': `Bearer ${ANON_KEY}`, 'Content-Type': 'application/json' };
 
 // ═══════════════════════════════════════════════════════════════
-// ⚠️ ZELFDE PLACEHOLDER-IDs (901–912) ALS IN index.html ⚠️
-// Na aanmaken in Supabase: in BEIDE bestanden vervangen door de
-// echte subcategorie-ids (en straks ook in sync_protocollen.py).
+// Vier domeinen + domein-overstijgende thema's.
+// IDs = bestaande Supabase-subcategorieën (categorie 6).
+// ⚠️ ÉÉN PLACEHOLDER: id 999 = 'Borst- en ribklachten' — nieuwe
+// subcategorie aanmaken in Supabase en 999 vervangen door het
+// echte id (zelfde in index.html).
 // ═══════════════════════════════════════════════════════════════
 const DOMEINEN = {
-  cervicaal: {
-    naam: 'Nek & hoofd', anatomie: 'Cervicale wervelkolom',
+  nek: {
+    naam: 'Nek (en hoofd)', anatomie: 'Cervicale wervelkolom',
     kleur: '#1BA098', kleurLicht: '#E6F5F4', icoon: '💆',
     subcats: [
-      { id: 901, naam: 'Nekpijn & whiplash', sub: 'Stijve nek, whiplash, spierspanning' },
-      { id: 902, naam: 'Hoofdpijn & duizeligheid', sub: 'Spanningshoofdpijn, cervicogene hoofdpijn, duizelig' },
-      { id: 903, naam: 'Nekhernia & uitstraling', sub: 'Uitstraling naar arm, tintelingen, kracht' },
-      { id: 904, naam: 'Operatie: voorbereiding & revalidatie', sub: 'Voor en na een nekoperatie' },
+      { id: 37, naam: 'Nekklachten', sub: 'Nekpijn, hoofdpijn, stijfheid, uitstraling' },
     ]
   },
-  thoracaal: {
-    naam: 'Borstwervelkolom & ribben', anatomie: 'Thoracale wervelkolom',
+  borstribben: {
+    naam: 'Borst en ribben', anatomie: 'Thoracale wervelkolom',
     kleur: '#6ABF4B', kleurLicht: '#F0F9EB', icoon: '🫁',
     subcats: [
-      { id: 905, naam: 'Midden-rugpijn', sub: 'Pijn tussen de schouderbladen, blokkade' },
-      { id: 906, naam: 'Ribklachten & ademhaling', sub: 'Ribblokkade, pijn bij ademen, na ribbreuk' },
-      { id: 907, naam: 'Houding, kyfose & scoliose', sub: 'Kromme rug, houdingsklachten, scoliose' },
-      { id: 908, naam: 'Operatie: voorbereiding & revalidatie', sub: 'Voor en na een operatie aan de borstwervelkolom' },
+      { id: 999, naam: 'Borst- en ribklachten', sub: 'Midden-rugpijn, ribblokkade, pijn bij ademen' },
     ]
   },
-  lumbosacraal: {
-    naam: 'Lage rug & SI-gewricht', anatomie: 'Lumbo-sacrale wervelkolom',
-    kleur: '#2E7DD1', kleurLicht: '#EAF2FB', icoon: '🔻',
+  lagerug: {
+    naam: 'Lage rugklachten', anatomie: 'Lumbale wervelkolom',
+    kleur: '#2E7DD1', kleurLicht: '#EAF2FB', icoon: '😫',
     subcats: [
-      { id: 909, naam: 'Lage rugpijn', sub: 'Acute of chronische lage rugklachten, spit' },
-      { id: 910, naam: 'Hernia & ischias', sub: 'Uitstraling naar been, zenuwpijn, tintelingen' },
-      { id: 911, naam: 'SI-gewricht & bekken', sub: 'SI-klachten, bekkeninstabiliteit, bekkenpijn' },
-      { id: 912, naam: 'Operatie: voorbereiding & revalidatie', sub: 'Voor en na een lage-rugoperatie' },
+      { id: 36, naam: 'Lage rugklachten', sub: 'Spit, hernia, uitstraling, chronische rugpijn' },
+    ]
+  },
+  bekken: {
+    naam: 'Bekkenklachten (en SI)', anatomie: 'Sacrum & SI-gewrichten',
+    kleur: '#8E44AD', kleurLicht: '#F4EAF9', icoon: '🔗',
+    subcats: [
+      { id: 38, naam: 'Bekkenklachten', sub: 'Bekkenpijn, SI-klachten, zwangerschap' },
+    ]
+  },
+  themas: {
+    naam: "Thema's", anatomie: 'Combineerbaar met elk gebied',
+    kleur: '#F5A623', kleurLicht: '#FEF6E7', icoon: '🏥',
+    subcats: [
+      { id: 39, naam: 'Houding en scoliose', sub: 'Houdingsklachten, scoliose, kyfose' },
+      { id: 42, naam: 'Voorbereiding op operatie', sub: 'Prehabilitatie voor rug- of nekoperatie' },
+      { id: 40, naam: 'Revalidatie na operatie', sub: 'Herstel na rug- of nekoperatie' },
+      { id: 41, naam: 'Sport, bewegen en overbelasting', sub: 'Rug- en nekklachten door sport of werk' },
     ]
   }
 };
-const LUMBOSACRAAL_IDS = DOMEINEN.lumbosacraal.subcats.map(s => s.id);
+const LRN_SUBCAT_IDS = [36, 38];   // Lage Rugnetwerk-eis: lage rug + bekken/SI
 
 const DISCIPLINES = [
   { naam: 'Fysiotherapeut', sub: 'Algemeen fysiotherapeut' },
@@ -340,15 +350,6 @@ function renderDomeinen() {
           <div class="sub">${s.sub}</div>
         </div>
       </label>`).join('');
-    const lrnBlok = key === 'lumbosacraal' ? `
-      <div class="lrn-blok" id="lrn-blok">
-        <div class="lrn-titel">🔗 Lage Rugnetwerk (regio Breda)</div>
-        <p>Deelname aan het domein Lage rug & SI-gewricht vereist aansluiting bij het Lage Rugnetwerk. Bent u nog niet aangesloten? Dan nemen wij na uw aanmelding contact op over de aansluiting.</p>
-        <div class="checkbox-wrap">
-          <input type="checkbox" id="lrn-akkoord" />
-          <label for="lrn-akkoord">Ik ben aangesloten bij het Lage Rugnetwerk, of ik ga akkoord met aansluiting als voorwaarde voor deelname aan dit domein. <span style="color:#2E7DD1">*</span></label>
-        </div>
-      </div>` : '';
     return `
       <div class="domein-blok" style="--db:${d.kleur};--dbl:${d.kleurLicht}">
         <div class="domein-kop">
@@ -357,16 +358,23 @@ function renderDomeinen() {
           <span class="anatomie">${d.anatomie}</span>
         </div>
         <div class="domein-opties">${opties}</div>
-        ${lrnBlok}
       </div>`;
-  }).join('');
+  }).join('') + `
+    <div class="lrn-blok" id="lrn-blok" style="margin:0">
+      <div class="lrn-titel">🔗 Lage Rugnetwerk (regio Breda)</div>
+      <p>Deelname aan de domeinen <strong>Lage rugklachten</strong> en <strong>Bekkenklachten (en SI)</strong> vereist aansluiting bij het Lage Rugnetwerk. Bent u nog niet aangesloten? Dan nemen wij na uw aanmelding contact op over de aansluiting.</p>
+      <div class="checkbox-wrap">
+        <input type="checkbox" id="lrn-akkoord" />
+        <label for="lrn-akkoord">Ik ben aangesloten bij het Lage Rugnetwerk, of ik ga akkoord met aansluiting als voorwaarde voor deelname aan deze domeinen. <span style="color:#2E7DD1">*</span></label>
+      </div>
+    </div>`;
 }
 
 function specGewijzigd(cb) {
   cb.closest('.spec-optie').classList.toggle('gekozen', cb.checked);
   // Toon/verberg Lage Rugnetwerk-bevestiging
   const geselecteerd = gekozenSubcatIds();
-  const lumboActief = geselecteerd.some(id => LUMBOSACRAAL_IDS.includes(id));
+  const lumboActief = geselecteerd.some(id => LRN_SUBCAT_IDS.includes(id));
   document.getElementById('lrn-blok')?.classList.toggle('zichtbaar', lumboActief);
 }
 
@@ -429,7 +437,7 @@ async function verstuurAanmelding() {
   if (subcatIds.length === 0) { alert('Selecteer minimaal één specialisatie (stap 4).'); return; }
 
   // Lage Rugnetwerk-eis bij lumbosacrale specialisaties
-  const lumboGekozen = subcatIds.some(id => LUMBOSACRAAL_IDS.includes(id));
+  const lumboGekozen = subcatIds.some(id => LRN_SUBCAT_IDS.includes(id));
   if (lumboGekozen && !document.getElementById('lrn-akkoord')?.checked) {
     alert('U heeft een specialisatie in het domein Lage rug & SI-gewricht gekozen. Bevestig de aansluiting bij het Lage Rugnetwerk (blauw blok in stap 4).');
     document.getElementById('lrn-blok').scrollIntoView({ behavior: 'smooth', block: 'center' });
