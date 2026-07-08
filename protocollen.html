@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Behandelprotocollen – Mentaal Gezond</title>
+  <meta name="description" content="Overzicht van behandelprotocollen voor psychosomatische fysiotherapie: psychosomatische klachten, ademhaling, hyperventilatie en functionele neurologische stoornissen." />
+  <style>
+    
+    @font-face { font-family: 'Inter'; src: url('../fonts/inter-v20-latin-300.woff2') format('woff2'); font-weight: 300; font-display: swap; }
+    @font-face { font-family: 'Inter'; src: url('../fonts/inter-v20-latin-regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'Inter'; src: url('../fonts/inter-v20-latin-500.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+    @font-face { font-family: 'Inter'; src: url('../fonts/inter-v20-latin-600.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+    @font-face { font-family: 'Inter'; src: url('../fonts/inter-v20-latin-700.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal: #2A9D8F; --teal-light: #E8F5F4; --teal-dark: #1f7a6e;
+      --navy: #264653; --navy-dark: #1a2f38;
+      --grey-bg: #F8F9FA; --grey-border: #E8ECF0;
+      --text: #264653; --text-muted: #6B7A7E; --white: #FFFFFF;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; font-size: 16px; color: var(--text); background: var(--grey-bg); line-height: 1.7; }
+    header { background: var(--white); border-bottom: 1px solid var(--grey-border); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .header-inner { max-width: 1000px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .logo img { height: 48px; width: 48px; object-fit: contain; border-radius: 10px; }
+    .logo-text { font-weight: 700; font-size: 1rem; color: var(--navy); }
+    .logo-text span { color: var(--teal); }
+    nav a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; font-weight: 500; padding: 7px 12px; border-radius: 8px; transition: all 0.2s; }
+    nav a:hover { background: var(--grey-bg); color: var(--navy); }
+    nav a.cta { background: var(--teal); color: white; font-weight: 700; }
+    @media (max-width: 700px) { nav { display: none; } }
+    .content { max-width: 780px; margin: 0 auto; padding: 40px 24px 80px; }
+    .content h1 { font-size: clamp(1.6rem,3.5vw,2.2rem); font-weight: 700; color: var(--navy); margin-bottom: 12px; line-height: 1.2; letter-spacing: -0.02em; }
+    .content h2 { font-size: 1.2rem; font-weight: 700; color: var(--navy); margin: 2em 0 0.6em; padding-bottom: 8px; border-bottom: 2px solid var(--teal-light); }
+    .content h3 { font-size: 1rem; font-weight: 700; color: var(--navy); margin: 1.4em 0 0.5em; }
+    .content h4 { font-size: 0.9rem; font-weight: 700; color: var(--text-muted); margin: 1em 0 0.3em; text-transform: uppercase; letter-spacing: 0.05em; }
+    .content p { margin-bottom: 1em; line-height: 1.75; }
+    .content ul, .content ol { margin: 0.5em 0 1em 1.5em; }
+    .content li { margin-bottom: 0.4em; line-height: 1.65; }
+    .content strong { font-weight: 700; color: var(--navy); }
+    .content em { font-style: italic; }
+    .content hr { border: none; border-top: 1px solid var(--grey-border); margin: 2em 0; }
+    .content a { color: var(--teal); }
+    .content a:hover { text-decoration: underline; }
+    footer { background: var(--navy-dark); color: rgba(255,255,255,0.4); text-align: center; padding: 28px 24px; font-size: 0.82rem; margin-top: 48px; }
+    footer a { color: rgba(255,255,255,0.6); text-decoration: none; }
+    
+    .page-hero { background: linear-gradient(135deg, #2A9D8F 0%, #52B788 40%, #264653 100%); color: white; padding: 56px 24px 48px; text-align: center; position: relative; overflow: hidden; }
+    .page-hero::before { content:''; position:absolute; inset:0; background:rgba(0,0,0,0.3); }
+    .page-hero-inner { position: relative; z-index: 1; }
+    .page-hero h1 { font-size: clamp(1.8rem,4vw,2.4rem); font-weight: 700; margin-bottom: 10px; letter-spacing: -0.02em; text-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    .page-hero p { opacity: 0.9; max-width: 560px; margin: 0 auto 28px; font-size: 0.95rem; }
+    .zoekbalk-wrap { max-width: 520px; margin: 0 auto; }
+    .zoekbalk { display: flex; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+    .zoekbalk input { flex: 1; padding: 14px 20px; border: none; outline: none; font-family: inherit; font-size: 1rem; color: #264653; }
+    .zoekbalk button { padding: 14px 22px; background: #2A9D8F; color: white; border: none; cursor: pointer; font-weight: 700; font-size: 0.9rem; transition: background 0.2s; }
+    .zoekbalk button:hover { background: #1f7a6e; }
+    .filter-wrap { max-width: 1100px; margin: 28px auto 0; padding: 0 24px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .filter-label { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-right: 4px; white-space: nowrap; }
+    .zone-btn { padding: 6px 14px; border-radius: 999px; border: 1.5px solid var(--grey-border); background: var(--white); color: var(--text-muted); font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .zone-btn:hover, .zone-btn.actief { background: #2A9D8F; border-color: #2A9D8F; color: white; }
+    .container { max-width: 1100px; margin: 28px auto 64px; padding: 0 24px; }
+    .resultaat-info { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; }
+    .protocollen-grid { display: flex; flex-direction: column; gap: 16px; }
+    .protocol-kaart { background: var(--white); border: 1px solid var(--grey-border); border-radius: 14px; padding: 26px 30px; transition: box-shadow 0.2s; }
+    .protocol-kaart:hover { box-shadow: 0 4px 20px rgba(38,70,83,0.10); }
+    .protocol-kaart.verborgen { display: none; }
+    .zone-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--teal); background: var(--teal-light); padding: 3px 12px; border-radius: 999px; margin-bottom: 12px; }
+    .protocol-naam { font-size: 1.05rem; font-weight: 700; color: var(--navy); margin-bottom: 12px; }
+    .protocol-preview { font-size: 0.85rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 16px; max-height: 90px; overflow: hidden; position: relative; }
+    .protocol-preview::after { content:""; position:absolute; bottom:0; left:0; right:0; height:32px; background:linear-gradient(transparent,white); }
+    .protocol-preview h2, .protocol-preview h3 { color: var(--navy); font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; }
+    .protocol-preview p { margin-bottom: 6px; }
+    .protocol-niveaus { display: flex; gap: 10px; flex-wrap: wrap; padding-top: 14px; border-top: 1px solid var(--grey-border); }
+    .niveau-btn { padding: 7px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; text-decoration: none; transition: all 0.15s; }
+    .niveau-btn.makkelijk { background: #EDF7EE; color: #2e7d32; }
+    .niveau-btn.makkelijk:hover { background: #2e7d32; color: white; }
+    .niveau-btn.complex { background: #E8F5F4; color: #1f7a6e; }
+    .niveau-btn.complex:hover { background: #1f7a6e; color: white; }
+    .geen-resultaten { text-align: center; padding: 64px 24px; color: var(--text-muted); display: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <img src="LogoMentaleGezondheid.jpeg" alt="Mentaal Gezond" />
+      <div class="logo-text"><span>Mentaal</span> Gezond</div>
+    </a>
+    <nav>
+      <a href="index.html">← Home</a>
+      <a href="index.html#zoeken">Zoeken</a>
+      <a href="therapeut-aanmelden.html" class="cta">Aanmelden</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <h1>Behandelprotocollen</h1>
+    <p>Wetenschappelijk onderbouwde protocollen voor therapeuten en begrijpelijke informatie voor patiënten.</p>
+    <div class="zoekbalk-wrap">
+      <div class="zoekbalk">
+        <input type="text" id="zoek-input" placeholder="Zoek bijv. FNS, hyperventilatie, burn-out..." oninput="zoek()" />
+        <button onclick="zoek()">🔍 Zoeken</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="filter-wrap">
+  <span class="filter-label">Specialisatie:</span>
+  <button class="zone-btn actief" onclick="filterZone(this,'alle')">Alle specialisaties</button>
+<button class="zone-btn" onclick="filterZone(this,'psychosomatiek')">🫁 Psychosomatische klachten</button>
+<button class="zone-btn" onclick="filterZone(this,'ademhaling')">💨 Ademhaling & hyperventilatie</button>
+<button class="zone-btn" onclick="filterZone(this,'fns')">🧠 Functionele neurologische stoornis</button>
+
+</div>
+
+<div class="container">
+  <div class="resultaat-info" id="resultaat-info"></div>
+  <div class="protocollen-grid" id="protocollen-grid">
+    <div class="protocol-kaart" data-naam="functionele neurologische stoornis (fns)" data-zone="fns" data-tekst="informatie voor patiënten en naasten deze uitleg hoort bij het behandelprotocol functionele neurologische stoornis (fns). uw therapeut kan alles hieronder met u bespreken en toepassen op uw situatie. wat is fns? fns staat voor functionele neurologische stoornis. het is een aandoening waarbij uw zenuwstelsel op dit moment niet goed werkt. uw klachten zijn echt. ze zijn niet ingebeeld, en u kunt er zelf niets aan doen. bij fns kunt u verschillende klachten hebben, bijvoorbeeld: zwakte of verlammin">
+  <div class="zone-badge">🧠 Functionele neurologische stoornis</div>
+  <h2 class="protocol-naam">Functionele Neurologische Stoornis (FNS)</h2>
+  <div class="protocol-preview"></div>
+  <div class="protocol-niveaus"><a href="protocollen/functionele-neurologische-stoornis-fns-makkelijk.html" class="niveau-btn makkelijk">📗 Voor patiënten</a>
+<a href="protocollen/functionele-neurologische-stoornis-fns-complex.html" class="niveau-btn complex">📕 Voor therapeuten</a>
+</div>
+</div>
+
+  </div>
+  <div class="geen-resultaten" id="geen-resultaten">
+    <div style="font-size:3rem;margin-bottom:12px">🔍</div>
+    <div>Geen protocollen gevonden voor deze zoekopdracht.</div>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2026 Mentaal Gezond &nbsp;&middot;&nbsp;
+  <a href="../index.html">Home</a> &nbsp;&middot;&nbsp;
+  <a href="../protocollen.html">Protocollen</a> &nbsp;&middot;&nbsp;
+  Onderdeel van het <a href="https://vindjefysio.net">VindJeFysio Netwerk</a></p>
+</footer>
+
+<script>
+  let actieveZone = 'alle';
+  function normaliseer(t) { return t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''); }
+  function zoek() {
+    const term = normaliseer(document.getElementById('zoek-input').value);
+    const kaarten = document.querySelectorAll('.protocol-kaart');
+    let zichtbaar = 0;
+    kaarten.forEach(k => {
+      const naam  = normaliseer(k.dataset.naam || '');
+      const tekst = normaliseer(k.dataset.tekst || '');
+      const zoneMatch = actieveZone === 'alle' || k.dataset.zone === actieveZone;
+      const zoekMatch = !term || naam.includes(term) || tekst.includes(term);
+      k.classList.toggle('verborgen', !(zoneMatch && zoekMatch));
+      if (zoneMatch && zoekMatch) zichtbaar++;
+    });
+    document.getElementById('resultaat-info').textContent =
+      (term || actieveZone !== 'alle') ? zichtbaar + ' protocollen gevonden' : '';
+    document.getElementById('geen-resultaten').style.display = zichtbaar === 0 ? 'block' : 'none';
+  }
+  function filterZone(btn, zone) {
+    actieveZone = zone;
+    document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('actief'));
+    btn.classList.add('actief');
+    zoek();
+  }
+</script>
+</body>
+</html>
