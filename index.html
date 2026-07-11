@@ -75,18 +75,25 @@
     .domein-knop.actief .dot { background: rgba(255,255,255,0.6); }
 
     /* ZOEKBALK met locatieveld rechts */
-    .zoek-balk { display: flex; gap: 8px; background: var(--grey-bg); border: 2px solid var(--grey-border); border-radius: 12px; padding: 6px; margin-bottom: 12px; transition: border-color 0.2s; }
+    .zoek-balk { display: flex; align-items: flex-end; gap: 8px; background: var(--grey-bg); border: 2px solid var(--grey-border); border-radius: 12px; padding: 8px 6px 6px; margin-bottom: 12px; transition: border-color 0.2s; }
     .zoek-balk:focus-within { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(27,160,152,0.12); }
-    .zoek-input { flex: 1; min-width: 0; padding: 10px 14px; border: none; background: transparent; font-family: 'Inter', sans-serif; font-size: 0.95rem; color: var(--text); outline: none; }
-    .zoek-scheiding { width: 1px; background: var(--grey-border); margin: 4px 0; flex-shrink: 0; }
-    .zoek-locatie-input { width: 160px; padding: 10px 14px; border: none; background: transparent; font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--text); outline: none; flex-shrink: 0; }
+    .zoek-veld { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .zoek-veld-klacht { flex: 1.7 1 0%; }
+    .zoek-veld-locatie { flex: 1 1 130px; flex-shrink: 0; }
+    .zoek-veld-label { display: flex; align-items: baseline; gap: 5px; padding: 0 8px; font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--teal); white-space: nowrap; }
+    .zoek-veld-label-locatie { color: var(--text-muted); }
+    .zoek-veld-label .optioneel { font-weight: 400; text-transform: none; letter-spacing: normal; color: var(--text-muted); opacity: 0.8; }
+    .zoek-input { width: 100%; min-width: 0; padding: 7px 8px; border: none; background: transparent; font-family: 'Inter', sans-serif; font-size: 0.95rem; color: var(--text); outline: none; }
+    .zoek-scheiding { width: 1px; align-self: stretch; background: var(--grey-border); margin: 4px 0; flex-shrink: 0; }
+    .zoek-locatie-input { width: 100%; padding: 7px 8px; border: none; background: transparent; font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--text); outline: none; }
     .zoek-locatie-input::placeholder { color: var(--text-muted); }
-    .zoek-btn-inline { padding: 10px 18px; background: var(--teal); color: var(--white); border: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: background 0.2s; white-space: nowrap; flex-shrink: 0; }
+    .zoek-btn-inline { padding: 10px 18px; margin-bottom: 1px; background: var(--teal); color: var(--white); border: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: background 0.2s; white-space: nowrap; flex-shrink: 0; }
     .zoek-btn-inline:hover { background: var(--teal-dark); }
-    .zoek-wis { background: none; border: none; cursor: pointer; font-size: 0.85rem; color: var(--text-muted); padding: 4px 8px; display: none; flex-shrink: 0; align-self: center; }
+    .zoek-wis { background: none; border: none; cursor: pointer; font-size: 0.85rem; color: var(--text-muted); padding: 4px 8px; display: none; flex-shrink: 0; align-self: flex-end; margin-bottom: 3px; }
 
     /* SUGGESTIES onder zoekbalk */
     .cat-suggesties { display: flex; flex-direction: column; gap: 4px; }
+    .cat-suggesties:not(:empty)::before { content: "Populair:"; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); padding: 0 2px 2px; }
     .cat-suggestie { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1.5px solid var(--grey-border); border-radius: 10px; cursor: pointer; transition: all 0.15s; background: var(--white); }
     .cat-suggestie:hover { border-color: var(--sk, var(--teal)); background: var(--grey-bg); }
     .cat-suggestie .icon { font-size: 1.2rem; flex-shrink: 0; }
@@ -217,15 +224,21 @@
       <div class="domein-knoppen" id="domein-knoppen"></div>
 
       <div class="zoek-balk">
-        <input type="text" class="zoek-input" id="zoek-input"
-          placeholder="Bijv. lage rugpijn, nekhernia, hoofdpijn..."
-          oninput="handleZoekInput(this.value)"
-          onkeydown="if(event.key==='Enter') voerZoekopdracht()" />
+        <div class="zoek-veld zoek-veld-klacht">
+          <label class="zoek-veld-label" for="zoek-input">🩺 Waarmee kunnen we helpen?</label>
+          <input type="text" class="zoek-input" id="zoek-input"
+            placeholder="Bijv. lage rugpijn, nekhernia, hoofdpijn..."
+            oninput="handleZoekInput(this.value)"
+            onkeydown="if(event.key==='Enter') voerZoekopdracht()" />
+        </div>
         <button class="zoek-wis" id="zoek-wis" onclick="wisZoekopdracht()">✕</button>
         <div class="zoek-scheiding"></div>
-        <input type="text" class="zoek-locatie-input" id="zoek-locatie"
-          placeholder="📍 Stad of postcode"
-          onkeydown="if(event.key==='Enter') voerZoekopdracht()" />
+        <div class="zoek-veld zoek-veld-locatie">
+          <label class="zoek-veld-label zoek-veld-label-locatie" for="zoek-locatie">📍 In de buurt van <span class="optioneel">(optioneel)</span></label>
+          <input type="text" class="zoek-locatie-input" id="zoek-locatie"
+            placeholder="📍 Stad of postcode"
+            onkeydown="if(event.key==='Enter') voerZoekopdracht()" />
+        </div>
         <button class="zoek-btn-inline" onclick="voerZoekopdracht()">Zoeken</button>
       </div>
 
