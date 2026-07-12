@@ -130,6 +130,12 @@
     .checkbox-wrap label { font-size: 0.84rem; color: var(--text-muted); line-height: 1.55; }
     .checkbox-wrap a { color: var(--teal); }
 
+    /* PRIJS */
+    .prijs-uitleg { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+    .prijs-totaal { display: flex; justify-content: space-between; align-items: center; background: var(--teal-light); border: 1.5px solid var(--teal); border-radius: 10px; padding: 14px 18px; margin-bottom: 14px; }
+    .prijs-totaal .prijs-label { font-size: 0.85rem; font-weight: 600; color: var(--navy); }
+    .prijs-totaal .prijs-bedrag { font-size: 1.3rem; font-weight: 700; color: var(--teal-dark); }
+
     .btn-submit { width: 100%; padding: 14px; background: var(--teal); color: var(--white); border: none; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
     .btn-submit:hover { background: var(--teal-dark); }
     .btn-submit:disabled { opacity: 0.55; cursor: not-allowed; }
@@ -238,6 +244,20 @@
         <label>Korte bio</label>
         <textarea id="bio" placeholder="Vertel in 2-3 zinnen over uw achtergrond en werkwijze. Dit wordt zichtbaar op uw profiel." maxlength="400" oninput="document.getElementById('bio-tekens').textContent=this.value.length"></textarea>
         <p class="form-hint"><span id="bio-tekens">0</span>/400 tekens</p>
+      </div>
+    </div>
+
+    <!-- STAP 6: WAT KOST HET -->
+    <div class="form-sectie">
+      <div class="form-sectie-titel">💶 6. Wat kost het</div>
+      <p class="prijs-uitleg">€12 per maand per netwerk waarop je je profileert. Meld je je aan op meerdere gespecialiseerde netwerken, dan telt elk netwerk apart mee.</p>
+      <div class="prijs-totaal">
+        <span class="prijs-label">Uw investering op het Rug Nek Netwerk</span>
+        <span class="prijs-bedrag" id="prijs-bedrag">—</span>
+      </div>
+      <div class="checkbox-wrap">
+        <input type="checkbox" id="prijs-akkoord" />
+        <label for="prijs-akkoord">Ik ga akkoord met de kosten van €12 per maand voor zichtbaarheid op het Rug Nek Netwerk.</label>
       </div>
     </div>
 
@@ -384,6 +404,14 @@ function specGewijzigd(cb) {
   const geselecteerd = gekozenSubcatIds();
   const lumboActief = geselecteerd.some(id => LRN_SUBCAT_IDS.includes(id));
   document.getElementById('lrn-blok')?.classList.toggle('zichtbaar', lumboActief);
+  updatePrijs();
+}
+
+function updatePrijs() {
+  const bedrag = document.getElementById('prijs-bedrag');
+  if (!bedrag) return;
+  // Vast bedrag per netwerk (dit formulier = één netwerk), telt niet mee per aangevinkte specialisatie
+  bedrag.textContent = gekozenSubcatIds().length > 0 ? '€12 / maand' : '—';
 }
 
 function gekozenSubcatIds() {
@@ -483,6 +511,11 @@ async function verstuurAanmelding() {
     return;
   }
 
+  if (!document.getElementById('prijs-akkoord').checked) {
+    alert('Bevestig dat u akkoord gaat met de kosten van €12 per maand (stap 6).');
+    document.getElementById('prijs-akkoord').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
   if (!document.getElementById('protocol-akkoord').checked) { alert('Bevestig dat u werkt volgens de behandelprotocollen.'); return; }
   if (!document.getElementById('privacy-akkoord').checked) { alert('Vink het privacyakkoord aan.'); return; }
 
