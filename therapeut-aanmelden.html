@@ -87,6 +87,12 @@
     .geen-code-blok { background: var(--geel-light); border: 1px solid rgba(243,156,18,0.35); border-radius: 10px; padding: 14px 16px; font-size: 0.82rem; color: #7d5a00; margin-top: 14px; line-height: 1.6; }
     .geen-code-blok a { color: var(--teal); font-weight: 600; }
 
+    /* TOEGEVOEGDE LOCATIES */
+    .locatie-chip { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--groen-light); border: 1.5px solid var(--groen); border-radius: 10px; }
+    .locatie-chip .naam { font-size: 0.88rem; font-weight: 700; color: #2e7d32; }
+    .locatie-chip .details { font-size: 0.78rem; color: #2e7d32; }
+    .locatie-chip .verwijder { background: none; border: none; color: #2e7d32; cursor: pointer; font-size: 0.78rem; text-decoration: underline; white-space: nowrap; margin-left: auto; font-family: 'Inter', sans-serif; }
+
     /* DISCIPLINES */
     .keuze-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
     .keuze-optie { display: flex; align-items: flex-start; gap: 10px; padding: 13px 15px; border: 1.5px solid var(--grey-border); border-radius: 10px; background: var(--white); cursor: pointer; transition: all 0.15s; }
@@ -175,16 +181,18 @@
 
   <div id="form-container">
 
-    <!-- STAP 1: PRAKTIJKCODE -->
+    <!-- STAP 1: PRAKTIJKCODE(S) -->
     <div class="form-sectie">
-      <div class="form-sectie-titel">🔑 1. Praktijkcode</div>
+      <div class="form-sectie-titel">🔑 1. Praktijkcode(s)</div>
+      <p style="font-size:0.83rem;color:var(--text-muted);margin-bottom:14px">Werkt u op meerdere locaties? Voeg de codes hier één voor één toe.</p>
+      <div id="toegevoegde-locaties" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px"></div>
       <div class="form-group">
         <label>Code van uw praktijk <span class="req">*</span></label>
         <div class="code-rij">
           <div class="code-input" style="flex:1">
-            <input type="text" id="praktijk-code" placeholder="ABC123" maxlength="6" oninput="this.value=this.value.toUpperCase(); resetCodeStatus()" />
+            <input type="text" id="praktijk-code" placeholder="ABC123" maxlength="6" oninput="this.value=this.value.toUpperCase(); resetCodeStatus()" onkeydown="if(event.key==='Enter'){event.preventDefault(); controleerCode();}" />
           </div>
-          <button type="button" class="code-check-btn" onclick="controleerCode()">Controleer</button>
+          <button type="button" class="code-check-btn" onclick="controleerCode()">Toevoegen →</button>
         </div>
         <div class="code-status" id="code-status"></div>
         <div class="geen-code-blok">
@@ -325,7 +333,7 @@ const DISCIPLINES = [
   { naam: 'Ergotherapeut', sub: '' },
 ];
 
-let gecontroleerdePraktijk = null;
+let geverifieerdePraktijken = []; // meerdere locaties mogelijk
 
 function renderDisciplines() {
   const grid = document.getElementById('disciplines-grid');
@@ -391,10 +399,27 @@ function subcatNaam(id) {
 }
 
 function resetCodeStatus() {
-  gecontroleerdePraktijk = null;
   const status = document.getElementById('code-status');
   status.className = 'code-status';
   status.textContent = '';
+}
+
+function renderToegevoegdeLocaties() {
+  const container = document.getElementById('toegevoegde-locaties');
+  container.innerHTML = geverifieerdePraktijken.map((p, i) => `
+    <div class="locatie-chip">
+      <span>✓</span>
+      <div>
+        <div class="naam">${p.naam}</div>
+        <div class="details">${p.stad} · Code: ${p.praktijk_code}</div>
+      </div>
+      <button type="button" class="verwijder" onclick="verwijderLocatie(${i})">Verwijderen</button>
+    </div>`).join('');
+}
+
+function verwijderLocatie(index) {
+  geverifieerdePraktijken.splice(index, 1);
+  renderToegevoegdeLocaties();
 }
 
 async function controleerCode() {
@@ -405,15 +430,21 @@ async function controleerCode() {
     status.textContent = 'Vul de volledige code van 6 tekens in.';
     return;
   }
+  if (geverifieerdePraktijken.some(p => p.praktijk_code === code)) {
+    status.className = 'code-status fout';
+    status.textContent = 'Deze locatie heeft u al toegevoegd.';
+    return;
+  }
   try {
-    const resp = await fetch(`${SUPABASE_URL}/rest/v1/praktijken?praktijk_code=eq.${encodeURIComponent(code)}&actief=eq.true&select=id,naam,stad`, { headers: HEADERS });
+    const resp = await fetch(`${SUPABASE_URL}/rest/v1/praktijken?praktijk_code=eq.${encodeURIComponent(code)}&actief=eq.true&select=id,naam,stad,praktijk_code`, { headers: HEADERS });
     const praktijken = await resp.json();
     if (Array.isArray(praktijken) && praktijken.length > 0) {
-      gecontroleerdePraktijk = praktijken[0];
+      geverifieerdePraktijken.push(praktijken[0]);
+      document.getElementById('praktijk-code').value = '';
       status.className = 'code-status ok';
-      status.innerHTML = `✅ Code gevonden: <strong>${gecontroleerdePraktijk.naam}</strong> in ${gecontroleerdePraktijk.stad}. U kunt verder met uw aanmelding.`;
+      status.innerHTML = `✅ Toegevoegd: <strong>${praktijken[0].naam}</strong> in ${praktijken[0].stad}. Nog een locatie? Vul de volgende code in.`;
+      renderToegevoegdeLocaties();
     } else {
-      gecontroleerdePraktijk = null;
       status.className = 'code-status fout';
       status.textContent = '❌ Deze code is niet gevonden of de praktijk is nog niet goedgekeurd. Controleer de code bij uw praktijkhouder.';
     }
@@ -426,8 +457,8 @@ async function controleerCode() {
 async function verstuurAanmelding() {
   if (document.getElementById('website_url').value) return; // honeypot
 
-  if (!gecontroleerdePraktijk) {
-    alert('Controleer eerst uw praktijkcode (stap 1). Klik op "Controleer" naast het codeveld.');
+  if (geverifieerdePraktijken.length === 0) {
+    alert('Voeg eerst minimaal één praktijkcode toe (stap 1).');
     document.getElementById('praktijk-code').scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
@@ -466,23 +497,26 @@ async function verstuurAanmelding() {
     if (Array.isArray(bestaande) && bestaande.length > 0) {
       const match = bestaande.find(t => t.actief) || bestaande[0];
 
-      // Nieuwe praktijkkoppeling meteen toevoegen (net als bij een gloednieuwe aanmelding), met dedupe
+      // Nieuwe praktijkkoppeling(en) meteen toevoegen (net als bij een gloednieuwe aanmelding), met dedupe
       const huidigeKoppelResp = await fetch(`${SUPABASE_URL}/rest/v1/therapeut_praktijken?therapeut_id=eq.${match.id}&select=praktijk_id`, { headers: HEADERS });
       const huidigePraktijkIds = (await huidigeKoppelResp.json()).map(k => k.praktijk_id);
-      if (!huidigePraktijkIds.includes(gecontroleerdePraktijk.id)) {
+      const nieuwePraktijken = geverifieerdePraktijken.filter(p => !huidigePraktijkIds.includes(p.id));
+      if (nieuwePraktijken.length > 0) {
         await fetch(`${SUPABASE_URL}/rest/v1/therapeut_praktijken`, {
           method: 'POST', headers: HEADERS,
-          body: JSON.stringify({ therapeut_id: match.id, praktijk_id: gecontroleerdePraktijk.id })
+          body: JSON.stringify(nieuwePraktijken.map(p => ({ therapeut_id: match.id, praktijk_id: p.id })))
         });
       }
 
-      // Alleen echt nieuwe specialisaties ter goedkeuring aanbieden
+      // Alleen echt nieuwe specialisaties ter goedkeuring aanbieden — deze gelden voor het hele profiel,
+      // dus voor al zijn/haar locaties, niet alleen de nieuw toegevoegde
       const huidigeSubcatResp = await fetch(`${SUPABASE_URL}/rest/v1/therapeut_subcategorieen?therapeut_id=eq.${match.id}&select=subcategorie_id`, { headers: HEADERS });
       const huidigeSubcatIds = (await huidigeSubcatResp.json()).map(s => s.subcategorie_id);
       const nieuweSubcatIds = subcatIds.filter(id => !huidigeSubcatIds.includes(id));
 
       if (nieuweSubcatIds.length === 0) {
-        alert('U bent al bekend in het netwerk met precies deze specialisatie(s). Er is niets nieuws om aan te vragen.');
+        const locatieTekst = nieuwePraktijken.length > 0 ? ' Uw nieuwe locatie(s) zijn direct gekoppeld.' : '';
+        alert(`U bent al bekend in het netwerk met precies deze specialisatie(s).${locatieTekst}`);
         btn.textContent = 'Aanmelding versturen →'; btn.disabled = false;
         return;
       }
@@ -518,7 +552,7 @@ async function verstuurAanmelding() {
         telefoon: document.getElementById('telefoon').value.trim(),
         bio: document.getElementById('bio').value.trim() + lrnNotitie,
         disciplines,
-        code: document.getElementById('praktijk-code').value.trim().toUpperCase(),
+        code: geverifieerdePraktijken[0]?.praktijk_code || '',
         aangemeld_via: 'rugnek.net',
         actief: false
       })
@@ -526,11 +560,11 @@ async function verstuurAanmelding() {
     if (!therapeutResp.ok) throw new Error('Therapeut aanmaken mislukt: ' + await therapeutResp.text());
     const nieuweTherapeut = (await therapeutResp.json())[0];
 
-    // 2. Koppel aan praktijk
+    // 2. Koppel aan praktijk/praktijken
     const koppelResp = await fetch(`${SUPABASE_URL}/rest/v1/therapeut_praktijken`, {
       method: 'POST',
       headers: HEADERS,
-      body: JSON.stringify({ therapeut_id: nieuweTherapeut.id, praktijk_id: gecontroleerdePraktijk.id })
+      body: JSON.stringify(geverifieerdePraktijken.map(p => ({ therapeut_id: nieuweTherapeut.id, praktijk_id: p.id })))
     });
     if (!koppelResp.ok) console.warn('Praktijkkoppeling mislukt:', await koppelResp.text());
 
