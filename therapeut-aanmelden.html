@@ -382,6 +382,14 @@ function gekozenSubcatIds() {
   return [...document.querySelectorAll('.spec-checkbox:checked')].map(c => parseInt(c.value));
 }
 
+function subcatNaam(id) {
+  for (const d of Object.values(DOMEINEN)) {
+    const match = d.subcats.find(s => s.id === id);
+    if (match) return match.naam;
+  }
+  return `#${id}`;
+}
+
 function resetCodeStatus() {
   gecontroleerdePraktijk = null;
   const status = document.getElementById('code-status');
@@ -451,6 +459,55 @@ async function verstuurAanmelding() {
   btn.textContent = 'Versturen...'; btn.disabled = true;
 
   try {
+    // 0. Check of e-mailadres al bekend is in het netwerk (case-insensitive)
+    const bestaandeResp = await fetch(`${SUPABASE_URL}/rest/v1/therapeuten?email=ilike.${encodeURIComponent(email)}&select=id,voornaam,achternaam,actief`, { headers: HEADERS });
+    const bestaande = await bestaandeResp.json();
+
+    if (Array.isArray(bestaande) && bestaande.length > 0) {
+      const match = bestaande.find(t => t.actief) || bestaande[0];
+
+      // Nieuwe praktijkkoppeling meteen toevoegen (net als bij een gloednieuwe aanmelding), met dedupe
+      const huidigeKoppelResp = await fetch(`${SUPABASE_URL}/rest/v1/therapeut_praktijken?therapeut_id=eq.${match.id}&select=praktijk_id`, { headers: HEADERS });
+      const huidigePraktijkIds = (await huidigeKoppelResp.json()).map(k => k.praktijk_id);
+      if (!huidigePraktijkIds.includes(gecontroleerdePraktijk.id)) {
+        await fetch(`${SUPABASE_URL}/rest/v1/therapeut_praktijken`, {
+          method: 'POST', headers: HEADERS,
+          body: JSON.stringify({ therapeut_id: match.id, praktijk_id: gecontroleerdePraktijk.id })
+        });
+      }
+
+      // Alleen echt nieuwe specialisaties ter goedkeuring aanbieden
+      const huidigeSubcatResp = await fetch(`${SUPABASE_URL}/rest/v1/therapeut_subcategorieen?therapeut_id=eq.${match.id}&select=subcategorie_id`, { headers: HEADERS });
+      const huidigeSubcatIds = (await huidigeSubcatResp.json()).map(s => s.subcategorie_id);
+      const nieuweSubcatIds = subcatIds.filter(id => !huidigeSubcatIds.includes(id));
+
+      if (nieuweSubcatIds.length === 0) {
+        alert('U bent al bekend in het netwerk met precies deze specialisatie(s). Er is niets nieuws om aan te vragen.');
+        btn.textContent = 'Aanmelding versturen →'; btn.disabled = false;
+        return;
+      }
+
+      const subcatNamen = nieuweSubcatIds.map(id => subcatNaam(id)).join(', ');
+      await fetch(`${SUPABASE_URL}/rest/v1/profiel_wijzigingen`, {
+        method: 'POST', headers: HEADERS,
+        body: JSON.stringify({
+          therapeut_code: `THERAPEUT-${match.id}`,
+          therapeut_naam: `${match.voornaam} ${match.achternaam}`,
+          type: 'specialisatie_toevoeging',
+          toelichting: `Aangevraagd via rugnek.net: ${subcatNamen}`,
+          nieuwe_subcategorie_ids: nieuweSubcatIds.join(','),
+          ingediend_op: new Date().toISOString()
+        })
+      });
+
+      document.getElementById('succes-blok').querySelector('h2').textContent = 'U bent al bekend in het netwerk!';
+      document.getElementById('succes-blok').querySelector('p').textContent = 'Uw nieuwe specialisatie(s) zijn ter goedkeuring doorgestuurd. U hoeft verder niets te doen — uw bestaande inlog blijft gewoon werken.';
+      document.getElementById('form-container').style.display = 'none';
+      document.getElementById('succes-blok').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     // 1. Therapeut aanmaken (niet actief — wacht op goedkeuring in beheer)
     const lrnNotitie = lumboGekozen ? ' [LRN-akkoord: ja]' : '';
     const therapeutResp = await fetch(`${SUPABASE_URL}/rest/v1/therapeuten`, {
