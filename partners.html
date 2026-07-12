@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Partners - Rug Nek Netwerk</title>
+  <style>
+    @font-face { font-family: 'Inter'; src: url('fonts/inter-v20-latin-300.woff2') format('woff2'); font-weight: 300; font-display: swap; }
+    @font-face { font-family: 'Inter'; src: url('fonts/inter-v20-latin-regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'Inter'; src: url('fonts/inter-v20-latin-500.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+    @font-face { font-family: 'Inter'; src: url('fonts/inter-v20-latin-600.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+    @font-face { font-family: 'Inter'; src: url('fonts/inter-v20-latin-700.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal: #1BA098; --teal-light: #E6F5F4; --teal-dark: #14807A;
+      --navy: #22384A; --navy-dark: #16242F;
+      --grey-bg: #F8F9FA; --grey-border: #E8ECF0;
+      --text: #22384A; --text-muted: #75828E; --white: #FFFFFF;
+      --gold: #C9940A; --gold-light: #FEF9E7;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; font-size: 16px; color: var(--text); background: var(--white); line-height: 1.6; }
+
+    header { background: var(--white); border-bottom: 1px solid var(--grey-border); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .header-inner { max-width: 1100px; margin: 0 auto; padding: 0 clamp(1rem,4vw,2rem); display: flex; align-items: center; justify-content: space-between; height: 68px; gap: 16px; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; flex-shrink: 0; }
+    .logo img { height: 42px; width: auto; }
+    .logo-text { font-weight: 700; font-size: 1rem; color: var(--navy); line-height: 1.2; }
+    .logo-text span { color: var(--teal); }
+    nav { display: flex; gap: 4px; align-items: center; }
+    nav a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; font-weight: 500; padding: 7px 12px; border-radius: 8px; transition: all 0.2s; white-space: nowrap; }
+    nav a:hover { background: var(--grey-bg); color: var(--navy); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--navy); border-radius: 2px; }
+    @media (max-width: 700px) {
+      .hamburger { display: flex; }
+      nav { display: none; position: absolute; top: 68px; left: 0; right: 0; background: var(--white); flex-direction: column; align-items: stretch; padding: 12px 16px 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); border-top: 1px solid var(--grey-border); }
+      nav.open { display: flex; }
+      nav a { padding: 12px 14px; }
+    }
+
+    .hero { background: linear-gradient(160deg, var(--teal) 0%, var(--navy) 100%); color: var(--white); padding: 64px 24px 0; text-align: center; position: relative; }
+    .hero-inner { max-width: 640px; margin: 0 auto; position: relative; padding-bottom: 64px; }
+    .hero-wave { display: block; width: 100%; height: 56px; }
+    .hero-badge { display: inline-block; background: rgba(201,148,10,0.25); border: 1px solid rgba(201,148,10,0.5); color: #F5C842; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 14px; border-radius: 999px; margin-bottom: 20px; }
+    .hero h1 { font-size: clamp(1.8rem, 4.5vw, 2.6rem); font-weight: 700; line-height: 1.15; margin-bottom: 16px; letter-spacing: -0.02em; }
+    .hero h1 em { font-style: normal; color: #F5C842; }
+    .hero p { font-size: 1rem; opacity: 0.85; max-width: 520px; margin: 0 auto; line-height: 1.7; }
+
+    section { padding: 64px 24px; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+    .section-header { margin-bottom: 40px; }
+    .section-header h2 { font-size: clamp(1.4rem, 3vw, 1.8rem); font-weight: 700; color: var(--navy); letter-spacing: -0.02em; }
+    .section-header p { margin-top: 10px; color: var(--text-muted); max-width: 520px; font-size: 0.92rem; }
+
+    .partners-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 22px; }
+    .partner-card { background: var(--white); border: 2px solid var(--gold); border-radius: 16px; padding: 26px; box-shadow: 0 4px 18px rgba(201,148,10,0.1); position: relative; }
+    .partner-badge { position: absolute; top: -12px; left: 20px; background: linear-gradient(135deg, var(--gold), #E8A800); color: var(--white); font-size: 0.68rem; font-weight: 700; padding: 3px 12px; border-radius: 999px; letter-spacing: 0.06em; }
+    .partner-card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .partner-logo { width: 58px; height: 58px; border-radius: 10px; object-fit: contain; background: var(--navy); padding: 8px; flex-shrink: 0; }
+    .partner-logo-placeholder { width: 58px; height: 58px; border-radius: 10px; background: var(--gold-light); border: 1px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+    .partner-naam { font-weight: 700; font-size: 0.98rem; color: var(--navy); }
+    .partner-disc { font-size: 0.76rem; color: var(--text-muted); margin-top: 2px; }
+    .partner-beschrijving { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+    .partner-adres { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; }
+    .partner-contact { display: flex; flex-direction: column; gap: 4px; }
+    .partner-contact a { font-size: 0.8rem; color: var(--teal); text-decoration: none; }
+    .partner-contact a:hover { text-decoration: underline; }
+    .partner-website-btn { display: inline-block; margin-top: 12px; padding: 7px 16px; background: var(--gold-light); color: var(--gold); border: 1px solid var(--gold); border-radius: 8px; font-size: 0.8rem; font-weight: 700; text-decoration: none; }
+    .partner-website-btn:hover { background: var(--gold); color: var(--white); }
+
+    .geen-partners { text-align: center; padding: 56px 24px; color: var(--text-muted); }
+    .geen-partners .icon { font-size: 2.6rem; margin-bottom: 14px; }
+    .spinner { width: 20px; height: 20px; border: 2px solid var(--grey-border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 40px auto; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .cta-section { background: linear-gradient(160deg, var(--teal) 0%, var(--navy) 100%); color: var(--white); text-align: center; padding: 64px 24px; }
+    .cta-section h2 { font-size: clamp(1.4rem, 3vw, 1.8rem); font-weight: 700; margin-bottom: 14px; }
+    .cta-section p { opacity: 0.85; max-width: 480px; margin: 0 auto 28px; font-size: 0.92rem; }
+    .btn-primary { display: inline-block; background: var(--gold); color: var(--white); padding: 13px 30px; border-radius: 8px; font-weight: 700; font-size: 0.92rem; text-decoration: none; }
+    .btn-primary:hover { background: #a87808; }
+
+    footer { background: var(--grey-bg); border-top: 1px solid var(--grey-border); color: var(--text-muted); text-align: center; padding: 28px 24px; font-size: 0.82rem; }
+    footer a { color: var(--teal); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <img src="rugnek_logo.png" alt="Rug Nek Netwerk" />
+      <div class="logo-text"><span>Rug Nek</span> Netwerk</div>
+    </a>
+    <div class="hamburger" onclick="this.classList.toggle('open'); document.getElementById('main-nav').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+    <nav id="main-nav">
+      <a href="index.html">Terug naar site</a>
+      <a href="therapeut-aanmelden.html">Aanmelden als therapeut</a>
+      <a href="https://vindjefysio.net/aanmelden.html?via=rugnek.net">Locatie aanmelden</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Partners &amp; organisaties</div>
+    <h1>Onze <em>partners</em></h1>
+    <p>Samen met zorgorganisaties, verwijzers en aangesloten praktijken werken wij aan hoogwaardige, geintegreerde rug-, nek- en bekkenzorg.</p>
+  </div>
+  <svg class="hero-wave" viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#F8F9FA"/>
+  </svg>
+</section>
+
+<section style="background:var(--white)">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-eyebrow">Samenwerking - onbetaald</div>
+      <h2>Samenwerkingsorganisaties</h2>
+      <p>Deze organisaties en verwijzers werken samen met het Rug Nek Netwerk aan geintegreerde zorg, zonder dat daar een maandelijkse bijdrage tegenover staat.</p>
+    </div>
+    <div id="organisaties-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;"></div>
+    <div style="text-align:center;margin-top:36px">
+      <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:16px">Bent u een verwijzende specialist of organisatie en wilt u samenwerken met het Rug Nek Netwerk?</p>
+      <a href="mailto:info@vindjefysio.net"
+        style="display:inline-block;background:var(--teal);color:var(--white);padding:12px 28px;border-radius:8px;font-weight:700;font-size:0.9rem;text-decoration:none">
+        Neem contact op
+      </a>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--grey-bg)">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-eyebrow">Aangesloten praktijken</div>
+      <h2>Onze partnerpraktijken</h2>
+      <p>Deze praktijken hebben het Partner-pakket binnen het Rug Nek Netwerk.</p>
+    </div>
+    <div id="partners-container"><div class="spinner"></div></div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <h2>Ook partner worden?</h2>
+  <p>Sluit u aan als partner en profiteer van de meest prominente positie binnen het Rug Nek Netwerk.</p>
+  <a href="https://vindjefysio.net/aanmelden.html?via=rugnek.net" class="btn-primary">Aanmelden als partner</a>
+</section>
+
+<footer>
+  <p>&copy; 2025 Rug Nek Netwerk - <a href="index.html">Terug naar home</a> - <a href="privacy.html">Privacyverklaring</a></p>
+</footer>
+
+<script>
+  const SUPABASE_URL = 'https://islujznszevdynguhjdc.supabase.co';
+  const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlzbHVqem5zemV2ZHluZ3VoamRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NDYzMDAsImV4cCI6MjA5NzIyMjMwMH0.wh3RXZRKfpfArr3YBYu8ktE7xv1inwDD72Vq3LJl3QQ';
+  const HEADERS = { 'apikey': ANON_KEY, 'Authorization': 'Bearer ' + ANON_KEY };
+  const CATEGORIE_ID = 6;
+
+  const ORGANISATIES = [];
+
+  function bouwOrganisatiesGrid() {
+    const grid = document.getElementById('organisaties-grid');
+    if (!grid) return;
+    if (ORGANISATIES.length === 0) {
+      grid.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:32px;font-size:0.9rem;width:100%">' +
+        '<div style="font-size:2rem;margin-bottom:12px">-</div>' +
+        '<p>Samenwerkingsorganisaties worden hier vermeld zodra toestemming is verkregen.</p></div>';
+      return;
+    }
+    grid.innerHTML = ORGANISATIES.map(function(o) {
+      var logo = o.logo
+        ? '<img src="' + o.logo + '" alt="' + o.naam + '" style="max-width:140px;max-height:48px;object-fit:contain;margin-bottom:14px">'
+        : '<div style="font-weight:700;font-size:1rem;color:var(--navy);margin-bottom:14px">' + o.naam + '</div>';
+      return '<div style="background:var(--white);border:1px solid var(--grey-border);border-radius:12px;padding:24px;display:flex;flex-direction:column">' +
+        logo +
+        '<div style="font-weight:700;font-size:0.9rem;color:var(--navy);margin-bottom:8px">' + o.naam + '</div>' +
+        (o.beschrijving ? '<p style="font-size:0.83rem;color:var(--text-muted);line-height:1.6;flex:1;margin-bottom:14px">' + o.beschrijving + '</p>' : '') +
+        '<a href="' + o.url + '" target="_blank" rel="noopener" style="display:inline-block;font-size:0.82rem;font-weight:600;color:var(--teal);text-decoration:none">Bezoek website</a></div>';
+    }).join('');
+  }
+  bouwOrganisatiesGrid();
+
+  var MAX_TEKENS = 200;
+
+  function laadPartners() {
+    var container = document.getElementById('partners-container');
+    var url = SUPABASE_URL + '/rest/v1/praktijken?tier=eq.partner&actief=eq.true&select=id,naam,straat,stad,postcode,telefoon,email,website,logo_url,beschrijving,disciplines,therapeut_praktijken(therapeuten(therapeut_subcategorieen(subcategorieen(categorie_id))))';
+    fetch(url, { headers: HEADERS })
+      .then(function(resp) { if (!resp.ok) throw new Error('fout'); return resp.json(); })
+      .then(function(praktijken) {
+        var partners = praktijken.filter(function(p) {
+          return (p.therapeut_praktijken || []).some(function(tp) {
+            var subcats = (tp.therapeuten && tp.therapeuten.therapeut_subcategorieen) || [];
+            return subcats.some(function(sc) { return sc.subcategorieen && sc.subcategorieen.categorie_id === CATEGORIE_ID; });
+          });
+        });
+        if (partners.length === 0) {
+          container.innerHTML = '<div class="geen-partners"><div class="icon">-</div><p>Nog geen partners aangesloten.<br>Word de eerste partner van het Rug Nek Netwerk!</p></div>';
+          return;
+        }
+        container.innerHTML = '<div class="partners-grid">' + partners.map(maakPartnerKaart).join('') + '</div>';
+      })
+      .catch(function() {
+        container.innerHTML = '<div class="geen-partners"><div class="icon">-</div><p>Nog geen partners aangesloten.</p></div>';
+      });
+  }
+
+  function maakPartnerKaart(p) {
+    var logo = p.logo_url
+      ? '<img class="partner-logo" src="' + p.logo_url + '" alt="' + p.naam + ' logo" onerror="this.style.display=\'none\'">'
+      : '<div class="partner-logo-placeholder">H</div>';
+
+    var beschrijvingHTML = '';
+    if (p.beschrijving) {
+      var kort = p.beschrijving.length > MAX_TEKENS;
+      var tekst = kort ? p.beschrijving.slice(0, MAX_TEKENS) + '...' : p.beschrijving;
+      beschrijvingHTML = '<p class="partner-beschrijving">' + tekst + '</p>';
+    }
+
+    return '<div class="partner-card">' +
+      '<div class="partner-badge">Partner</div>' +
+      '<div class="partner-card-header">' + logo +
+      '<div><div class="partner-naam">' + p.naam + '</div>' +
+      '<div class="partner-disc">' + (p.disciplines || []).join(', ') + '</div></div></div>' +
+      beschrijvingHTML +
+      '<div class="partner-adres">' + (p.straat || '') + ', ' + (p.stad || '') + '</div>' +
+      '<div class="partner-contact">' +
+      (p.email ? '<a href="mailto:' + p.email + '">' + p.email + '</a>' : '') +
+      (p.telefoon ? '<a href="tel:' + p.telefoon.replace(/[^+0-9]/g,'') + '">' + p.telefoon + '</a>' : '') +
+      '</div>' +
+      (p.website ? '<a href="' + p.website + '" class="partner-website-btn" target="_blank" rel="noopener">Bezoek website</a>' : '') +
+      '</div>';
+  }
+
+  laadPartners();
+</script>
+</body>
+</html>
