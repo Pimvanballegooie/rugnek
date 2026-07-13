@@ -406,6 +406,18 @@ function toonProfielscherm() {
   document.getElementById('btn-uitloggen').classList.add('zichtbaar');
 }
 
+const SITE_CATEGORIE_ID = 6; // categorie_id van dit netwerk in de subcategorieen-tabel
+const SITE_DOMEIN = 'rugnek.net'; // moet overeenkomen met praktijken.aangemeld_via
+
+// Bepaalt of een therapeut bij dit netwerk hoort: heeft een specialisatie binnen dit netwerk,
+// of is gekoppeld aan een praktijk die via dit domein is aangemeld. Later hier eventueel
+// site-/specialisatie-specifieke toelatingseisen aan toevoegen.
+function heeftAffiniteitMetNetwerk(subcatData, praktijken) {
+  const viaSpecialisatie = (subcatData || []).some(s => s.subcategorieen?.categorie_id === SITE_CATEGORIE_ID);
+  const viaPraktijk = (praktijken || []).some(p => p.aangemeld_via === SITE_DOMEIN);
+  return viaSpecialisatie || viaPraktijk;
+}
+
 async function inloggen() {
   const email = document.getElementById('inp-email').value.trim();
   const wachtwoord = document.getElementById('inp-wachtwoord').value;
@@ -424,7 +436,7 @@ async function inloggen() {
     const authHeaders = { 'apikey': ANON_KEY, 'Authorization': `Bearer ${authToken}` };
 
     const resp = await fetch(
-      `${SUPABASE_URL}/rest/v1/therapeuten?email=eq.${encodeURIComponent(email)}&actief=eq.true&select=*,therapeut_praktijken(praktijken(id,naam,stad,straat))`,
+      `${SUPABASE_URL}/rest/v1/therapeuten?email=eq.${encodeURIComponent(email)}&actief=eq.true&select=*,therapeut_praktijken(praktijken(id,naam,stad,straat,aangemeld_via))`,
       { headers: authHeaders }
     );
     const data = await resp.json();
@@ -435,10 +447,16 @@ async function inloggen() {
     const eerstePraktijk = praktijken[0];
 
     const subcatResp = await fetch(
-      `${SUPABASE_URL}/rest/v1/therapeut_subcategorieen?therapeut_id=eq.${t.id}&select=subcategorie_id`,
+      `${SUPABASE_URL}/rest/v1/therapeut_subcategorieen?therapeut_id=eq.${t.id}&select=subcategorie_id,subcategorieen(categorie_id)`,
       { headers: authHeaders }
     );
     const subcatData = await subcatResp.json();
+
+    if (!heeftAffiniteitMetNetwerk(subcatData, praktijken)) {
+      fout.textContent = 'Dit account is niet geregistreerd bij dit netwerk.';
+      fout.classList.add('zichtbaar');
+      return;
+    }
 
     huidigeTherapeut = {
       authToken, naam: `${t.voornaam} ${t.achternaam}`,
